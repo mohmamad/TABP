@@ -8,7 +8,7 @@ using System.Text;
 using TABP.API.CQRS.Handlers;
 using TABP.API.Logging;
 using TABP.API.Profiles;
-using TABP.Application.Profiles;
+using TABP.Domain.Interfaces;
 using TABP.Infrastructure;
 using TABP.Infrastructure.Repositories;
 
@@ -48,9 +48,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddAutoMapper(typeof(UserModelProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
 builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Authentication:Key"]);
