@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TABP.Infrastructure;
 
@@ -11,9 +12,11 @@ using TABP.Infrastructure;
 namespace TABP.Infrastructure.Migrations
 {
     [DbContext(typeof(TABPDbContext))]
-    partial class TABPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240101020642_seeding_user")]
+    partial class seeding_user
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,29 +44,6 @@ namespace TABP.Infrastructure.Migrations
                     b.HasKey("BookingId");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("TABP.Domain.Entities.City", b =>
-                {
-                    b.Property<Guid>("CityId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CityDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CityImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CityId");
-
-                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
@@ -94,24 +74,15 @@ namespace TABP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CountryName")
+                    b.Property<string>("CityName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetName")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LocationId");
-
-                    b.HasIndex("CityId");
 
                     b.ToTable("Locations");
                 });
@@ -169,25 +140,14 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("4747093d-c40d-4210-8319-a3da5f1ea435"),
-                            BirthDate = new DateTime(2024, 1, 13, 20, 52, 54, 328, DateTimeKind.Local).AddTicks(3237),
+                            UserId = new Guid("007792cc-d1ed-41a6-922c-5fe857ecae61"),
+                            BirthDate = new DateTime(2024, 1, 1, 4, 6, 42, 272, DateTimeKind.Local).AddTicks(4147),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
                             Password = "1234",
                             UserLevel = 1
                         });
-                });
-
-            modelBuilder.Entity("TABP.Domain.Entities.Location", b =>
-                {
-                    b.HasOne("TABP.Domain.Entities.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
                 });
 #pragma warning restore 612, 618
         }
