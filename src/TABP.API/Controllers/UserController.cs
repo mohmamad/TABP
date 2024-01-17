@@ -28,6 +28,8 @@ namespace TABP.API.Controllers
         {
             var user = _mapper.Map<User>(userDto);
 
+            if (!ModelState.IsValid)  return BadRequest("Invalid email address");
+
             var result = await _mediator.Send(new CreateUserCommand
             {
                 User = user
@@ -35,12 +37,10 @@ namespace TABP.API.Controllers
 
             if (result.IsSuccess)
             {
-                return Ok(result);
+                var userDtoToReturn = _mapper.Map<UserDto>(result.Data);
+                return Ok(userDtoToReturn);
             }
-            else
-            {
-                return BadRequest(result.ErrorMessage);
-            }
+            else return BadRequest(result.ErrorMessage);
         }
 
         [HttpPost("/login")]
@@ -52,14 +52,10 @@ namespace TABP.API.Controllers
             {
                 UserCredentials = userCredentials
             });
-            if (result.IsSuccess)
-            {
-                return Ok(result.Data);
-            }
-            else
-            {
-                return Unauthorized(result.ErrorMessage);
-            }
+
+            if (result.IsSuccess) return Ok(result.Data);
+
+            else return Unauthorized(result.ErrorMessage);
         }
     }
 }
