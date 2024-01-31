@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs;
 using TABP.API.Models;
 using TABP.Application.CQRS.Commands;
+using TABP.Application.CQRS.Queries;
 using TABP.Domain.Entities;
 
 namespace TABP.API.Controllers
@@ -28,7 +30,7 @@ namespace TABP.API.Controllers
         {
             var user = _mapper.Map<User>(userDto);
 
-            if (!ModelState.IsValid)  return BadRequest("Invalid email address");
+            if (!ModelState.IsValid) return BadRequest("Invalid email address");
 
             var result = await _mediator.Send(new CreateUserCommand
             {
@@ -57,5 +59,65 @@ namespace TABP.API.Controllers
 
             else return Unauthorized(result.ErrorMessage);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUser
+            (
+                [FromQuery] Guid? userId,
+                [FromQuery] string? firstName,
+                [FromQuery] string? lastName,
+                [FromQuery] string? email,
+                [FromQuery] DateTime? birthDate,
+                [FromQuery] int? userLevel,
+                [FromQuery] int pageSize = 30,
+                [FromQuery] int page = 1
+            )
+        {
+            var result = await _mediator.Send(new GetUsersQuery
+            {
+                UserId = userId,
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                BirthDate = birthDate,
+                UserLevel = userLevel,
+                PageSize = pageSize,
+                Page = page
+            });
+
+            var userDto = _mapper.Map<IEnumerable<UserDto>>(result.Data);
+
+            return Ok(userDto);
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteUser(Guid userId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type.EndsWith("nameidentifier"));
+            var userIdFromToken = new Guid();
+            if (userIdClaim != null)
+            {
+                userIdFromToken = Guid.Parse(userIdClaim.Value);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel == "2" || userIdFromToken == userId)
+            {
+                await _mediator.Send(new DeleteUserByIdCommand
+                {
+                    UserId = userId
+                });
+                return Ok();
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+
     }
 }

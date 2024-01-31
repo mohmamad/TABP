@@ -4,7 +4,7 @@ using TABP.Domain.Entities;
 
 namespace TABP.Application.Profiles
 {
-    public class URLResolver : IValueResolver<User, UserDto, string>
+    public class UserURLResolver : IValueResolver<User, UserDto, string>
     {
         public string Resolve(User source, UserDto destination, string destMember, ResolutionContext context)
         {
