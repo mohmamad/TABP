@@ -1,0 +1,17 @@
+﻿namespace TABP.API.DTOs
+{
+    public class HotelDto
+    {
+        public Guid HotelId { get; set; }
+        public string HotelName { get; set; }
+        public string HotelDescription { get; set; }
+        public double Rating { get; set; }
+        public string Amenities { get; set; }
+        public string HotelTypeURL { get; set; }
+        public string HotelLocationURL { get; set; }
+        public string RoomsURL { get; set; }  
+        public string AddLocationURL { get; set; }
+        public string BookingURL { get; set; }
+
+    }
+}

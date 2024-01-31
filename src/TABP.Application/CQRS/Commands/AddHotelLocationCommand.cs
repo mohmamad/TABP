@@ -12,5 +12,6 @@ namespace TABP.Application.CQRS.Commands
         public string CityName { get; set; }
         public string CityDescription { get; set; }
         public string ImagePath { get; set; }
+        public Guid HotelId { get; set; }
     }
 }
