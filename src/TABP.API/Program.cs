@@ -7,10 +7,10 @@ using System.Reflection;
 using System.Text;
 using TABP.API.CQRS.Handlers;
 using TABP.API.Logging;
-using TABP.API.Profiles;
 using TABP.Domain.Interfaces;
 using TABP.Infrastructure;
 using TABP.Infrastructure.Repositories;
+using TABP.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +19,11 @@ builder.Services.AddDbContext<TABPDbContext>(options =>
     string connectionString = builder.Configuration["ConnectionStrings:SqlServerConnectionString"];
     options.UseSqlServer(connectionString);
 });
+
+
+
+
+
 
 builder.Services.AddControllers(options =>
 {
@@ -48,12 +53,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
 builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+builder.Services.AddScoped<IHotelTypeRepository, HotelTypeRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
+
+
+var basePath = builder.Configuration.GetSection("ImageStorage")["BasePath"];
+
+builder.Services.AddSingleton<IImageStorageService>(new ImageStorageService(basePath));
+
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Authentication:Key"]);
 
@@ -82,6 +95,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//app.UseStaticFiles();
 
 app.UseAuthentication();
 
