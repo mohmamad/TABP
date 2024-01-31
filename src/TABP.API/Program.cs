@@ -20,11 +20,6 @@ builder.Services.AddDbContext<TABPDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-
-
-
-
-
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(typeof(RequestResponseLoggingFilter));
@@ -95,8 +90,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseStaticFiles();
 
 app.UseAuthentication();
 

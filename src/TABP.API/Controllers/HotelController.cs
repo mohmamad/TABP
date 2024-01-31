@@ -110,32 +110,43 @@ namespace TABP.API.Controllers
             JsonPatchDocument<UpdateHotelDto> hotelJsonPatch
             )
         {
-            var result =  await _mediator.Send(new GetHotelByIdQuery
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if ( userLevel == "2" )
             {
-                HotelId = hotelId
-            });
+                var result = await _mediator.Send(new GetHotelByIdQuery
+                {
+                    HotelId = hotelId
+                });
 
-            if (!result.IsSuccess)
-            {
-                return NotFound();
+                if (!result.IsSuccess)
+                {
+                    return NotFound();
+                }
+                var hotel = result.Data;
+                var hotelDtoForUpdate = _mapper.Map<UpdateHotelDto>(hotel);
+                hotelJsonPatch.ApplyTo(hotelDtoForUpdate, ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (!TryValidateModel(hotelDtoForUpdate))
+                {
+                    return BadRequest(ModelState);
+                }
+
+                _mapper.Map(hotelDtoForUpdate, hotel);
+
+                await _mediator.Send(new SaveHotelChangesCommand());
+
+                return NoContent();
             }
-            var hotel = result.Data;
-            var hotelDtoForUpdate = _mapper.Map<UpdateHotelDto>(hotel);
-            hotelJsonPatch.ApplyTo(hotelDtoForUpdate, ModelState);
-            if (!ModelState.IsValid)
+            else
             {
-                return BadRequest(ModelState);
+                return Unauthorized();
             }
-            if (!TryValidateModel(hotelDtoForUpdate))
-            {
-                return BadRequest(ModelState);
-            }
-
-             _mapper.Map(hotelDtoForUpdate, hotel);
-
-            await _mediator.Send(new SaveHotelChangesCommand());
-
-            return NoContent();
+            
         }
+
+
     }
 }
