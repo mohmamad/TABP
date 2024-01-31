@@ -16,17 +16,25 @@ namespace TABP.Application.CQRS.Handlers
         public async Task<Result<Location>> Handle(AddHotelLocationCommand request, CancellationToken cancellationToken)
         {
             var location = new Location{
-                CountryName = request.CountryName,
                 StreetName = request.StreetName,
-                PostalCode = request.PostalCode
+                PostalCode = request.PostalCode,
+                HotelId = request.HotelId
             };
             var city = new City
             {
                 CityName = request.CityName,
+                CountryName = request.CountryName,
                 CityDescription = request.CityDescription,
                 CityImagePath = request.ImagePath
             };
-            await _repository.AddHotelLocationAsync(location, city);
+            try
+            {
+                await _repository.AddHotelLocationAsync(location, city);
+            }catch (Exception ex)
+            {
+                return Result<Location>.Failure("the hotel you are trying to add the location for does not exist.");
+            }
+            
 
             return Result<Location>.Success(location);
         }

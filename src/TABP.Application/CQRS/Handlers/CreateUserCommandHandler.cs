@@ -1,34 +1,29 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using TABP.Application.CQRS.Commands;
-using TABP.Application.Models;
+using TABP.Domain.Entities;
 using TABP.Infrastructure.Repositories;
 
 namespace TABP.API.CQRS.Handlers
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<UserModel>>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<User>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-        public CreateUserCommandHandler(IUserRepository userRepository , IMapper mapper)
+        public CreateUserCommandHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _mapper = mapper;
         }
-        public async Task<Result<UserModel>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmailAsync(request.User.Email);
             if (user == null)
             {
                 await _userRepository.AddUserAsync(request.User);
                 var foundUser = await _userRepository.GetUserByEmailAsync(request.User.Email);
-                var userModel = _mapper.Map<UserModel>(foundUser);
-
-                return Result<UserModel>.Success(userModel);
+                return Result<User>.Success(foundUser);
             }
             else
             {
-                return Result<UserModel>.Failure("Email Already Exists!");
+                return Result<User>.Failure("Email Already Exists!");
             }
 
         }

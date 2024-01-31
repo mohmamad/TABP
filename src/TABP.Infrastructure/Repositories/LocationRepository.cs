@@ -1,4 +1,5 @@
-﻿using TABP.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
 namespace TABP.Infrastructure.Repositories
@@ -12,8 +13,19 @@ namespace TABP.Infrastructure.Repositories
         }
         public async Task<Location> AddHotelLocationAsync(Location location, City city)
         {
-            await _dbContext.Cities.AddAsync(city);
-            location.CityId = city.CityId;
+            var foundCity = await _dbContext.Cities.FirstOrDefaultAsync(
+                c => c.CityName == city.CityName && c.CountryName == city.CountryName);
+
+            if (foundCity != null)
+            {
+                location.CityId = foundCity.CityId;
+            }
+            else
+            {
+                await _dbContext.Cities.AddAsync(city);
+                location.CityId = city.CityId;
+            }
+            
             await _dbContext.Locations.AddAsync(location);
             await _dbContext.SaveChangesAsync();
             return location;

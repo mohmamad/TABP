@@ -22,23 +22,50 @@ namespace TABP.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BookingRoom", b =>
+                {
+                    b.Property<Guid>("BookingsBookingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoomsRoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookingsBookingId", "RoomsRoomId");
+
+                    b.HasIndex("RoomsRoomId");
+
+                    b.ToTable("BookingRoom");
+                });
+
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
                 {
                     b.Property<Guid>("BookingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("HotelId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("BookingId");
+
+                    b.HasIndex("HotelId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
                 });
@@ -61,6 +88,10 @@ namespace TABP.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CountryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("CityId");
 
                     b.ToTable("Cities");
@@ -72,6 +103,10 @@ namespace TABP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Amenities")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("HotelDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -80,12 +115,52 @@ namespace TABP.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("LocationId")
+                    b.Property<Guid>("HotelTypeId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.HasKey("HotelId");
 
+                    b.HasIndex("HotelTypeId");
+
                     b.ToTable("Hotels");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.HotelImage", b =>
+                {
+                    b.Property<Guid>("HotelImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("HotelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HotelImageId");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("HotelImage");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
+                {
+                    b.Property<Guid>("HotelTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HotelTypeId");
+
+                    b.ToTable("HotelTypes");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Location", b =>
@@ -97,9 +172,8 @@ namespace TABP.Infrastructure.Migrations
                     b.Property<Guid>("CityId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CountryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("HotelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
@@ -113,7 +187,41 @@ namespace TABP.Infrastructure.Migrations
 
                     b.HasIndex("CityId");
 
+                    b.HasIndex("HotelId")
+                        .IsUnique();
+
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Review", b =>
+                {
+                    b.Property<Guid>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("HotelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("ReviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("HotelId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Room", b =>
@@ -122,16 +230,46 @@ namespace TABP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("HotelId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoomType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsAvaiable")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("RoomTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("RoomId");
 
+                    b.HasIndex("HotelId");
+
+                    b.HasIndex("RoomTypeId");
+
                     b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.RoomType", b =>
+                {
+                    b.Property<Guid>("RoomTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoomTypeId");
+
+                    b.ToTable("RoomTypes");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.User", b =>
@@ -169,14 +307,68 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("4747093d-c40d-4210-8319-a3da5f1ea435"),
-                            BirthDate = new DateTime(2024, 1, 13, 20, 52, 54, 328, DateTimeKind.Local).AddTicks(3237),
+                            UserId = new Guid("dacc660c-f94c-48f4-a0e6-18839d3ae6e2"),
+                            BirthDate = new DateTime(2024, 1, 30, 17, 55, 23, 802, DateTimeKind.Local).AddTicks(1566),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
                             Password = "1234",
-                            UserLevel = 1
+                            UserLevel = 2
                         });
+                });
+
+            modelBuilder.Entity("BookingRoom", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingsBookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TABP.Domain.Entities.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomsRoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Bookings")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TABP.Domain.Entities.User", "User")
+                        .WithMany("bookings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.HotelType", "HotelType")
+                        .WithMany("Hotels")
+                        .HasForeignKey("HotelTypeId");
+
+                    b.Navigation("HotelType");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.HotelImage", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Images")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Location", b =>
@@ -187,7 +379,84 @@ namespace TABP.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                        .WithOne("Location")
+                        .HasForeignKey("TABP.Domain.Entities.Location", "HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("City");
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Review", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Reviews")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TABP.Domain.Entities.User", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Room", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Rooms")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("TABP.Domain.Entities.RoomType", "RoomType")
+                        .WithMany("rooms")
+                        .HasForeignKey("RoomTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("RoomType");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("Location")
+                        .IsRequired();
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
+                {
+                    b.Navigation("Hotels");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.RoomType", b =>
+                {
+                    b.Navigation("rooms");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Reviews");
+
+                    b.Navigation("bookings");
                 });
 #pragma warning restore 612, 618
         }

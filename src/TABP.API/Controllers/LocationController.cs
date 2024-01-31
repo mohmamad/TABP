@@ -8,20 +8,23 @@ using TABP.Application.CQRS.Queries;
 
 namespace TABP.API.Controllers
 {
+
     [ApiController]
-    [Route("api/location")]
+    [Route("api/hotel")]
     public class LocationController : Controller
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+
         public LocationController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
-        [HttpPost]
+
+        [HttpPost("{hotelId}/location")]
         [Authorize]
-        public async Task<ActionResult<AddLocationDto>> Upload([FromForm] AddLocationDto imageFile)
+        public async Task<ActionResult<AddLocationDto>> Upload([FromForm] AddLocationDto imageFile, Guid hotelId)
         {
             var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
 
@@ -31,12 +34,12 @@ namespace TABP.API.Controllers
                 {
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.CityImage.FileName);
 
-                    var filePath = Path.Combine("C:\\Users\\GoldenTech\\Desktop\\study\\intern\\project\\TravelandAccommodationBookingPlatform\\src\\TABP.Infrastructure\\images\\", fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var filePath = await _mediator.Send(new SaveImageCommand
                     {
-                        imageFile.CityImage.CopyTo(stream);
-                    }
+                        CityImage = imageFile.CityImage,
+                        FileName = fileName,
+                    });
+
                     var result = await _mediator.Send(new AddHotelLocationCommand
                     {
                         CountryName = imageFile.CountryName,
@@ -44,12 +47,19 @@ namespace TABP.API.Controllers
                         CityName = imageFile.CityName,
                         CityDescription = imageFile.CityDescription,
                         PostalCode = imageFile.PostalCode,
-                        ImagePath = filePath,
+                        ImagePath = filePath.Data,
+                        HotelId = hotelId,
                     });
+                    if (result.IsSuccess)
+                    {
+                        var location = _mapper.Map<LocationDto>(result.Data);
 
-                    var location = _mapper.Map<LocationDto>(result.Data);
-
-                    return Ok(location);
+                        return Ok(location);
+                    }
+                    else
+                    {
+                        return BadRequest(result.ErrorMessage);
+                    }
                 }
                 return BadRequest();
             }
@@ -60,7 +70,7 @@ namespace TABP.API.Controllers
 
         }
 
-        [HttpGet("city/{CityId}")]
+        [HttpGet("location/city/{CityId}")]
 
         public async Task<ActionResult<CityDto>> GetCity(Guid CityId)
         {

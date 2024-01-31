@@ -8,5 +8,6 @@
         public string CityName { get; set; }
         public string CityDescription { get; set; }
         public IFormFile CityImage { get; set; }
+        
     }
 }

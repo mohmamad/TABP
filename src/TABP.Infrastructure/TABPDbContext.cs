@@ -8,7 +8,7 @@ namespace TABP.Infrastructure
     {
         public TABPDbContext()
         {
-             
+
         }
         public TABPDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
         public DbSet<User> Users { get; set; }
@@ -17,11 +17,25 @@ namespace TABP.Infrastructure
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<City> Cities { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<HotelType> HotelTypes { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
 
-
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Room>()
+        .HasOne(r => r.Hotel)
+        .WithMany(h => h.Rooms)
+        .HasForeignKey(r => r.HotelId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Hotel>().HasOne(h => h.HotelType)
+                .WithMany(ht => ht.Hotels)
+                .HasForeignKey(h => h.HotelTypeId)
+                .IsRequired(false);
+
+
+
             SeedingUsers(modelBuilder);
         }
 
@@ -38,10 +52,12 @@ namespace TABP.Infrastructure
                     Email = "mohamad.moghrabi@gmail.com",
                     Password = "1234",
                     BirthDate = DateTime.Now,
-                    UserLevel = UserLevel.User,
+                    UserLevel = UserLevel.Admin,
                 }
                 );
         }
+
+       
 
     }
 }

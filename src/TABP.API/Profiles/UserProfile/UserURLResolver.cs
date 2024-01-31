@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using TABP.Application.Models;
+using TABP.API.DTOs;
 using TABP.Domain.Entities;
 
 namespace TABP.Application.Profiles
 {
-    public class URLResolver : IValueResolver<User, UserModel, string>
+    public class UserURLResolver : IValueResolver<User, UserDto, string>
     {
-        public string Resolve(User source, UserModel destination, string destMember, ResolutionContext context)
+        public string Resolve(User source, UserDto destination, string destMember, ResolutionContext context)
         {
             return $"https://localhost:7183/login"; // TODO add here the link to the user Booking
         }

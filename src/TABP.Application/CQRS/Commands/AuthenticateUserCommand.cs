@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using TABP.API.CQRS.Handlers;
 using TABP.API.Models;
-using TABP.Domain.Entities;
 
 namespace TABP.Application.CQRS.Commands
 {
