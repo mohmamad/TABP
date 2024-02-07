@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using TABP.API.DTOs;
+using TABP.API.DTOs.UserDtos;
 using TABP.API.Models;
-using TABP.Application.CQRS.Commands;
-using TABP.Application.CQRS.Queries;
+using TABP.Application.CQRS.Commands.UserCommands;
+using TABP.Application.CQRS.Queries.UserQueries;
 using TABP.Domain.Entities;
 
 namespace TABP.API.Controllers

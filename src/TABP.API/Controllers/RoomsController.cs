@@ -2,10 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using TABP.API.DTOs;
-using TABP.Application.CQRS.Commands;
+using TABP.API.DTOs.RoomDtos;
+using TABP.Application.CQRS.Commands.RoomCommands;
 using TABP.Application.CQRS.Queries;
-using TABP.Domain.Entities;
+using TABP.Application.CQRS.Queries.RoomQueries;
 
 namespace TABP.API.Controllers
 {
@@ -70,7 +70,7 @@ namespace TABP.API.Controllers
             {
                 return Unauthorized();
             }
-        } 
+        }
 
 
         [HttpGet]
@@ -111,7 +111,7 @@ namespace TABP.API.Controllers
             {
                 RoomTypeId = roomTypeId
             });
-            var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);    
+            var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);
             return Ok(roomTypeDto);
         }
 
@@ -122,29 +122,38 @@ namespace TABP.API.Controllers
             JsonPatchDocument<UpdateRoomDto> RoomJsonPatch
             )
         {
-            var result = await _mediator.Send(new GetRoomByIdQuery
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel == "2")
             {
-                RoomId = roomId
-            });
-            if (!result.IsSuccess) return NotFound();
+                var result = await _mediator.Send(new GetRoomByIdQuery
+                {
+                    RoomId = roomId
+                });
+                if (!result.IsSuccess) return NotFound();
 
-            var room = result.Data;
-            var roomDtoForUpdate = _mapper.Map<UpdateRoomDto>(room);
-            RoomJsonPatch.ApplyTo(roomDtoForUpdate, ModelState);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+                var room = result.Data;
+                var roomDtoForUpdate = _mapper.Map<UpdateRoomDto>(room);
+                RoomJsonPatch.ApplyTo(roomDtoForUpdate, ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (!TryValidateModel(roomDtoForUpdate))
+                {
+                    return BadRequest(ModelState);
+                }
+
+                _mapper.Map(roomDtoForUpdate, room);
+
+                await _mediator.Send(new SaveRoomChangesCommand());
+
+                return NoContent();
             }
-            if (!TryValidateModel(roomDtoForUpdate))
+            else
             {
-                return BadRequest(ModelState);
+                return Unauthorized();
             }
 
-            _mapper.Map(roomDtoForUpdate, room);
-
-            await _mediator.Send(new SaveRoomChangesCommand());
-
-            return NoContent();
         }
     }
 }

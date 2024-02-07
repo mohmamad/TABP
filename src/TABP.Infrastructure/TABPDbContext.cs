@@ -20,7 +20,8 @@ namespace TABP.Infrastructure
         public DbSet<Review> Reviews { get; set; }
         public DbSet<HotelType> HotelTypes { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
-
+        public DbSet<FeaturedDeal> FeaturedDeals { get; set; }
+        public DbSet<HotelImage> HotelImages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Room>()
@@ -34,6 +35,13 @@ namespace TABP.Infrastructure
                 .HasForeignKey(h => h.HotelTypeId)
                 .IsRequired(false);
 
+
+
+            modelBuilder.Entity<FeaturedDeal>()
+        .HasOne(p => p.Room)
+        .WithMany(c => c.FeaturedDeals)
+        .HasForeignKey(c => c.RoomId)
+        .IsRequired(false);
 
 
             SeedingUsers(modelBuilder);
@@ -57,7 +65,7 @@ namespace TABP.Infrastructure
                 );
         }
 
-       
+
 
     }
 }

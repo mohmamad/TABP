@@ -1,4 +1,5 @@
-﻿using TABP.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
 namespace TABP.Infrastructure.Repositories
@@ -18,5 +19,9 @@ namespace TABP.Infrastructure.Repositories
             return hotelType;
         }
 
+        public async Task<HotelType> GetHotelTypeById(Guid hotelTypeId)
+        {
+            return await _dbContext.HotelTypes.FirstOrDefaultAsync(h => h.HotelTypeId == hotelTypeId);
+        }
     }
 }
