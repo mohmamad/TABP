@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using TABP.API.DTOs;
+using TABP.API.DTOs.UserDtos;
 using TABP.Application.Profiles;
 using TABP.Domain.Entities;
 

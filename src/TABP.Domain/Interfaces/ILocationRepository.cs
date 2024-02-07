@@ -10,5 +10,6 @@ namespace TABP.Domain.Interfaces
     public interface ILocationRepository
     {
         public Task<Location> AddHotelLocationAsync(Location location, City city);
+        public Task<Location> GetLocationByHotelId(Guid hotelId);
     }
 }

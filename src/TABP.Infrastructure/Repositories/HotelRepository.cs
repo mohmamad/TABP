@@ -16,7 +16,7 @@ namespace TABP.Infrastructure.Repositories
         {
 
             await _dbContext.AddAsync(hotel);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return hotel;
 
 
@@ -35,8 +35,8 @@ namespace TABP.Infrastructure.Repositories
                  double? rating,
                  string? amenities,
                  Guid? hotelTypeId,
-                 int pageSize = 30,
-                 int page = 1
+                 int pageSize,
+                 int page
             )
         {
             IQueryable<Hotel> hotelQuery = _dbContext.Hotels;
@@ -79,5 +79,16 @@ namespace TABP.Infrastructure.Repositories
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<HotelImage> AddHotelImageAsync(HotelImage hotelImage)
+        {
+            await _dbContext.AddAsync(hotelImage);
+            await _dbContext.SaveChangesAsync();
+            return hotelImage;
+        }
+
+        public async Task<HotelImage> GetHotelImageByHotelIdAsync(Guid hotelId)
+        {
+            return await _dbContext.HotelImages.FirstOrDefaultAsync(h => h.HotelId == hotelId);
+        }
     }
 }

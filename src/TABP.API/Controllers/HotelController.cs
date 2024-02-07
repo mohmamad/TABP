@@ -2,10 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using TABP.API.DTOs;
-using TABP.Application.CQRS.Commands;
-using TABP.Application.CQRS.Queries;
-using TABP.Domain.Entities;
+using TABP.API.DTOs.HotelDtos;
+using TABP.API.DTOs.LocationDtos;
+using TABP.Application.CQRS.Commands.HotelCommands;
+using TABP.Application.CQRS.Commands.LocationCommands;
+using TABP.Application.CQRS.Queries.HotelQueries;
 
 namespace TABP.API.Controllers
 {
@@ -54,7 +55,7 @@ namespace TABP.API.Controllers
         }
 
         [HttpPost("hotelType")]
-        public async Task<ActionResult<HotelType>> AddHotelType(AddHotelTypeDto addHotelTypeDto)
+        public async Task<ActionResult<HotelTypeDto>> AddHotelType(AddHotelTypeDto addHotelTypeDto)
         {
             var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
 
@@ -64,8 +65,8 @@ namespace TABP.API.Controllers
                 {
                     HotelType = addHotelTypeDto.HotelType
                 });
-
-                return Ok(result.Data);
+                var dtoToReturn = _mapper.Map<HotelTypeDto>(result.Data);
+                return Ok(dtoToReturn);
             }
             else
             {
@@ -106,12 +107,12 @@ namespace TABP.API.Controllers
         [HttpPatch("{hotelId}")]
         public async Task<ActionResult> UpdateHotel
             (
-            Guid hotelId, 
+            Guid hotelId,
             JsonPatchDocument<UpdateHotelDto> hotelJsonPatch
             )
         {
             var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
-            if ( userLevel == "2" )
+            if (userLevel == "2")
             {
                 var result = await _mediator.Send(new GetHotelByIdQuery
                 {
@@ -144,9 +145,74 @@ namespace TABP.API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
 
+        [HttpGet("hotelType/{hotelTypeId}")]
+        public async Task<ActionResult<HotelTypeDto>> GetHotelTypeById(Guid hotelTypeId)
+        {
+            var result = await _mediator.Send(new GetHotelTypeByIdQuery
+            {
+                hotelTypeId = hotelTypeId
+            });
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<HotelTypeDto>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
+        }
+        [HttpPost("hotelImage/{hotelId}")]
+        public async Task<ActionResult<HotelImageDto>> AddHotelImage([FromForm] AddHotelImageDto imageFile, Guid hotelId)
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+
+            if (userLevel == "2")
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.HotelImage.FileName);
+
+                var filePath = await _mediator.Send(new SaveImageCommand
+                {
+                    CityImage = imageFile.HotelImage,
+                    FileName = fileName,
+                });
+                var result = await _mediator.Send(new AddHotelImageCommand
+                {
+                    HotelId = hotelId,
+                    HotelImagePath = filePath.Data
+                });
+                var dtoToReturn = _mapper.Map<HotelImageDto>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+                
+        }
+
+        [HttpGet("hotelImage/{hotelId}")]
+        public async Task<ActionResult<HotelImageDto>> GetHotelImageByHotelId(Guid hotelId)
+        {
+            var result = await _mediator.Send(new GetHotelImageByHotelIdQuery
+            {
+                HotelId = hotelId
+            });
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<HotelImageDto>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
+        }
 
     }
 }

@@ -29,8 +29,8 @@ namespace TABP.Infrastructure.Repositories
                 double? price,
                 int? capacity,
                 bool? isAvaiable,
-                int pageSize = 30,
-                int page = 1
+                int pageSize,
+                int page
             )
         {
             IQueryable<Room> roomQuery = _dbContext.Rooms;

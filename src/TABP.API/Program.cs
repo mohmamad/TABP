@@ -5,8 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Reflection;
 using System.Text;
-using TABP.API.CQRS.Handlers;
 using TABP.API.Logging;
+using TABP.Application.CQRS.Handlers.CommandHandlers.UserHandlers;
 using TABP.Domain.Interfaces;
 using TABP.Infrastructure;
 using TABP.Infrastructure.Repositories;
@@ -55,6 +55,7 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IHotelTypeRepository, HotelTypeRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IFeaturedDealsRepository, FeaturedDealsRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
 
 

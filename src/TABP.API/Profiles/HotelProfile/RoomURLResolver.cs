@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using TABP.API.DTOs;
+using TABP.API.DTOs.HotelDtos;
 using TABP.Domain.Entities;
 
 namespace TABP.API.Profiles
@@ -8,7 +8,7 @@ namespace TABP.API.Profiles
     {
         public string Resolve(Hotel source, HotelDto destination, string destMember, ResolutionContext context)
         {
-            return $"https://localhost:7183/api/room?pageSize=30&hotelId={source.HotelId}";
+            return $"/api/room?pageSize=30&hotelId={source.HotelId}";
         }
     }
 }

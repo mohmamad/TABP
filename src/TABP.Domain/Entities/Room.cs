@@ -12,5 +12,6 @@
         public List<Booking> Bookings { get; set; }
         public Hotel Hotel { get; set; }
         public RoomType RoomType { get; set; }
+        public List<FeaturedDeal> FeaturedDeals { get; set; }
     }
 }

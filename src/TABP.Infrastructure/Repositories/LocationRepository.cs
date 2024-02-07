@@ -30,5 +30,11 @@ namespace TABP.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return location;
         }
+
+        public async Task<Location> GetLocationByHotelId(Guid hotelId)
+        {
+            return await _dbContext.Locations.FirstOrDefaultAsync(l => l.HotelId == hotelId);
+        }
+
     }
 }

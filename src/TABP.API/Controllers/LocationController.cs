@@ -2,9 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TABP.API.DTOs;
-using TABP.Application.CQRS.Commands;
-using TABP.Application.CQRS.Queries;
+using TABP.API.DTOs.LocationDtos;
+using TABP.Application.CQRS.Commands.LocationCommands;
+using TABP.Application.CQRS.Queries.LocationQueries;
 
 namespace TABP.API.Controllers
 {
@@ -87,6 +87,24 @@ namespace TABP.API.Controllers
             else
             {
                 return NotFound(result.ErrorMessage);
+            }
+        }
+
+        [HttpGet("{hotelId}/location")]
+        public async Task<ActionResult<LocationDto>> GetLocationByHotelId(Guid hotelId)
+        {
+            var result = await _mediator.Send(new GetLocationByHotelIdQuery
+            {
+                HotelId = hotelId
+            });
+            if (result.IsSuccess)
+            {
+                var DtoToReturn = _mapper.Map<LocationDto>(result.Data);
+                return Ok(DtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
             }
         }
     }

@@ -97,6 +97,35 @@ namespace TABP.Infrastructure.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("TABP.Domain.Entities.FeaturedDeal", b =>
+                {
+                    b.Property<Guid>("FeaturedDealId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("FeaturedDealId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("FeaturedDeals");
+                });
+
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
                 {
                     b.Property<Guid>("HotelId")
@@ -145,7 +174,7 @@ namespace TABP.Infrastructure.Migrations
 
                     b.HasIndex("HotelId");
 
-                    b.ToTable("HotelImage");
+                    b.ToTable("HotelImages");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
@@ -307,8 +336,8 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("dacc660c-f94c-48f4-a0e6-18839d3ae6e2"),
-                            BirthDate = new DateTime(2024, 1, 30, 17, 55, 23, 802, DateTimeKind.Local).AddTicks(1566),
+                            UserId = new Guid("eeea62a5-263b-442d-a2d9-9798765c60c5"),
+                            BirthDate = new DateTime(2024, 2, 5, 5, 30, 25, 723, DateTimeKind.Local).AddTicks(8167),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
@@ -349,6 +378,15 @@ namespace TABP.Infrastructure.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.FeaturedDeal", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Room", "Room")
+                        .WithMany("FeaturedDeals")
+                        .HasForeignKey("RoomId");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
@@ -445,6 +483,11 @@ namespace TABP.Infrastructure.Migrations
             modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
                 {
                     b.Navigation("Hotels");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Room", b =>
+                {
+                    b.Navigation("FeaturedDeals");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.RoomType", b =>
