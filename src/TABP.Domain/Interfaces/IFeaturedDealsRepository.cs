@@ -17,5 +17,6 @@ namespace TABP.Domain.Interfaces
                 int pageSize,
                 int page
            );
+        public Task<FeaturedDeal> GetFeaturedDealByRoomIdAsync(Guid roomId);
     }
 }
