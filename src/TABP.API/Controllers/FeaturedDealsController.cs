@@ -9,7 +9,7 @@ using TABP.Domain.Entities;
 namespace TABP.API.Controllers
 {
     [ApiController]
-    [Route("api/room/FeaturedDeal")]
+    [Route("api/room/featuredDeal")]
     public class FeaturedDealsController : Controller
     {
         private readonly IMediator _mediator;
@@ -31,8 +31,8 @@ namespace TABP.API.Controllers
                     RoomId = roomId,
                     Description = featuredDealsAddDto.Description,
                     Discount = featuredDealsAddDto.Discount,
-                    StartDate = featuredDealsAddDto.StartDate,
-                    EndDate = featuredDealsAddDto.EndDate,
+                    StartDate = featuredDealsAddDto.StartDate.ToUniversalTime(),
+                    EndDate = featuredDealsAddDto.EndDate.ToUniversalTime(),
                 });
                 if (result.IsSuccess)
                 {
