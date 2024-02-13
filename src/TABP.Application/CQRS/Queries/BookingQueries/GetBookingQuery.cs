@@ -6,12 +6,12 @@ namespace TABP.Application.CQRS.Queries.BookingQueries
 {
     public class GetBookingQuery : IRequest<Result<IEnumerable<Booking>>>
     {
-        public Guid? bookingId;
-        public Guid? userId;
-        public Guid? roomId;
-        public DateTime? startDate;
-        public DateTime? endDate;
-        public int pageSize;
-        public int page;
+        public Guid? BookingId;
+        public Guid? UserId;
+        public Guid? RoomId;
+        public DateTime? StartDate;
+        public DateTime? EndDate;
+        public int PageSize;
+        public int Page;
     }
 }

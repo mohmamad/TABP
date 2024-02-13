@@ -28,7 +28,8 @@ namespace TABP.Infrastructure.Repositories
                 int? roomNumber,
                 double? price,
                 int? capacity,
-                bool? isAvaiable,
+                double? maxPrice,
+                double? minPrice,
                 int pageSize,
                 int page
             )
@@ -58,6 +59,14 @@ namespace TABP.Infrastructure.Repositories
             if (capacity != null)
             {
                 roomQuery = roomQuery.Where(r => r.Capacity == capacity);
+            }
+            if (maxPrice != null)
+            {
+                roomQuery = roomQuery.Where(r => r.Price <= maxPrice);
+            }
+            if (minPrice != null)
+            {
+                roomQuery = roomQuery.Where(r => r.Price >= minPrice);
             }
 
             return await roomQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();

@@ -14,7 +14,8 @@ namespace TABP.Domain.Interfaces
                int? roomNumber,
                double? price,
                int? capacity,
-               bool? isAvaiable,
+               double? maxPrice,
+               double? minPrice,
                int pageSize = 30,
                int page = 1
            );

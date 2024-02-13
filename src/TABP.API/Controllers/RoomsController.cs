@@ -82,7 +82,8 @@ namespace TABP.API.Controllers
                 [FromQuery] int? roomNumber,
                 [FromQuery] double? price,
                 [FromQuery] int? capacity,
-                [FromQuery] bool? isAvaiable,
+                [FromQuery] double? maxPrice,
+                [FromQuery] double? minPrice,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -95,6 +96,8 @@ namespace TABP.API.Controllers
                 RoomNumber = roomNumber,
                 Price = price,
                 Capacity = capacity,
+                MaxPrice = maxPrice,
+                MinPrice = minPrice,
                 PageSize = pageSize,
                 Page = page
             });

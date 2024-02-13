@@ -76,7 +76,7 @@ namespace TABP.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HotelDto>>> GetHotel
+        public async Task<ActionResult<IEnumerable<FoundHotelDto>>> GetHotel
             (
                 [FromQuery] Guid? hotelId,
                 [FromQuery] string? hotelName,
@@ -84,6 +84,9 @@ namespace TABP.API.Controllers
                 [FromQuery] double? rating,
                 [FromQuery] string? amenities,
                 [FromQuery] Guid? hotelTypeId,
+                [FromQuery] string? hotelType,
+                [FromQuery] double? minPrice,
+                [FromQuery] double? maxPrice,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -96,12 +99,26 @@ namespace TABP.API.Controllers
                 Rating = rating,
                 Amenities = amenities,
                 HotelTypeId = hotelTypeId,
+                HotelType = hotelType,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
                 PageSize = pageSize,
                 Page = page
             });
-
-            var hotelDto = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
-            return Ok(hotelDto);
+            if (result.IsSuccess)
+            {
+                var hotelDto = _mapper.Map<IEnumerable<FoundHotelDto>>(result.Data);
+                foreach(var hotel in hotelDto)
+                {
+                    hotel.RoomsURL = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}";
+                }
+                return Ok(hotelDto);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
         }
 
         [HttpPatch("{hotelId}")]

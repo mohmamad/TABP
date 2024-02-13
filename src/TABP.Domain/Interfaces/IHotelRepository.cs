@@ -14,6 +14,9 @@ namespace TABP.Domain.Interfaces
                 double? rating,
                 string? amenities,
                 Guid? hotelTypeId,
+                string? hotelType,
+                double? minPrice,
+                double? maxPrice,
                 int pageSize = 30,
                 int page = 1
            );
