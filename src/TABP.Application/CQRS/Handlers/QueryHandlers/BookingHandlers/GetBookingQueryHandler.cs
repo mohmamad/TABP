@@ -17,13 +17,13 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.BookingHandlers
         {
             var booking = await _bookingRepository.GetBookingAsync
                 (
-                request.bookingId,
-                request.userId,
-                request.roomId,
-                request.startDate,
-                request.endDate,
-                request.pageSize,
-                request.page
+                request.BookingId,
+                request.UserId,
+                request.RoomId,
+                request.StartDate,
+                request.EndDate,
+                request.PageSize,
+                request.Page
                 );
             if( booking != null )
             {

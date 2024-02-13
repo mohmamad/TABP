@@ -35,6 +35,9 @@ namespace TABP.Infrastructure.Repositories
                  double? rating,
                  string? amenities,
                  Guid? hotelTypeId,
+                 string? hotelType,
+                 double? minPrice,
+                 double? maxPrice,
                  int pageSize,
                  int page
             )
@@ -64,6 +67,18 @@ namespace TABP.Infrastructure.Repositories
             if (hotelTypeId != null)
             {
                 hotelQuery = hotelQuery.Where(h => h.HotelTypeId == hotelTypeId);
+            }
+            if (hotelType != null)
+            {
+                hotelQuery = hotelQuery.Where(h => h.HotelType.Type == hotelType);
+            }
+            if (minPrice != null)
+            {
+                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price >= minPrice));
+            }
+            if (maxPrice != null)
+            {
+               hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price <= maxPrice));
             }
 
             return await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
