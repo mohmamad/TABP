@@ -93,5 +93,11 @@ namespace TABP.Infrastructure.Repositories
         {
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
+        public async Task<IEnumerable<Room>> GetRoomsWithFeaturedDealsByHotelIdAsync(Guid hotelId)
+        {
+            var rooms = _dbContext.Rooms.Where(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow));
+            return rooms;
+        }
     }
 }
