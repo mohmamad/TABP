@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.RoomCommands;
-using TABP.Application.CQRS.Queries;
 using TABP.Application.CQRS.Queries.RoomQueries;
 
 namespace TABP.API.Controllers
@@ -21,6 +20,7 @@ namespace TABP.API.Controllers
             _mediator = mediator;
             _mapper = mapper;
         }
+
         [HttpPost("{hotelId}")]
         public async Task<ActionResult<RoomDto>> AddRoom(AddRoomDto addRoomDto, Guid hotelId)
         {
@@ -52,26 +52,6 @@ namespace TABP.API.Controllers
                 return Unauthorized();
             }
         }
-
-        [HttpPost("roomType")]
-        public async Task<ActionResult<RoomTypeDto>> AddRoomType(AddRoomTypeDto addRoomTypeDto)
-        {
-            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
-            if (userLevel == "2")
-            {
-                var result = await _mediator.Send(new AddRoomTypeCommand
-                {
-                    Type = addRoomTypeDto.Type,
-                });
-                var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);
-                return Ok(roomTypeDto);
-            }
-            else
-            {
-                return Unauthorized();
-            }
-        }
-
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomDto>>> GetRoom
@@ -105,17 +85,6 @@ namespace TABP.API.Controllers
             var roomDto = _mapper.Map<IEnumerable<RoomDto>>(result.Data);
             return Ok(roomDto);
 
-        }
-
-        [HttpGet("roomType/{roomtypeId}")]
-        public async Task<ActionResult<RoomTypeDto>> GetRoomTypeByRoomId(Guid roomTypeId)
-        {
-            var result = await _mediator.Send(new GetRoomTypeByIdQuery
-            {
-                RoomTypeId = roomTypeId
-            });
-            var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);
-            return Ok(roomTypeDto);
         }
 
         [HttpPatch("{roomId}")]
@@ -158,5 +127,6 @@ namespace TABP.API.Controllers
             }
 
         }
+
     }
 }
