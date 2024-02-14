@@ -105,5 +105,11 @@ namespace TABP.Infrastructure.Repositories
         {
             return await _dbContext.HotelImages.FirstOrDefaultAsync(h => h.HotelId == hotelId);
         }
+
+        public async Task<IEnumerable<Hotel>> GetHotelWithFeaturedDeals()
+        {
+            var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow)));
+            return hotels;
+        }
     }
 }

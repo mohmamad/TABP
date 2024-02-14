@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.RoomCommands;
+using TABP.Application.CQRS.Queries.FeaturedDeals;
 using TABP.Application.CQRS.Queries.RoomQueries;
 
 namespace TABP.API.Controllers
@@ -126,6 +127,34 @@ namespace TABP.API.Controllers
                 return Unauthorized();
             }
 
+        }
+
+        [HttpGet("featuredDeal/{hotelId}")]
+        public async Task<ActionResult<IEnumerable<FeaturedDealRoomDto>>> GetRoomsWithFeatureddealsByHotelId(Guid hotelId)
+        {
+            
+            var result = await _mediator.Send(new GetRoomsWithFeatureddealsByHotelIdQuery { HotelId = hotelId });
+            
+            
+            if (result.IsSuccess)
+            {
+                var roomDto = _mapper.Map<IEnumerable<FeaturedDealRoomDto>>(result.Data);
+                foreach (var room in roomDto)
+                {
+                    var featuredDeal = await _mediator.Send(new GetFeaturedDealsQuery { RoomId = room.RoomId });
+                    if (featuredDeal.IsSuccess)
+                    {
+                        room.DiscountPrice = (1 - featuredDeal.Data.ToList()[0].Discount) * room.Price;
+                        room.Discount = featuredDeal.Data.ToList()[0].Discount;
+                    }
+                }
+                return Ok(roomDto);
+            }
+            else 
+            { 
+                return BadRequest(result.ErrorMessage); 
+            }
+            
         }
 
     }

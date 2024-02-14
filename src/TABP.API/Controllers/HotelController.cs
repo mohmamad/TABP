@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using TABP.API.DTOs.FeaturedDealsDtos;
 using TABP.API.DTOs.HotelDtos;
 using TABP.Application.CQRS.Commands.HotelCommands;
 using TABP.Application.CQRS.Commands.LocationCommands;
@@ -189,6 +190,22 @@ namespace TABP.API.Controllers
                 return BadRequest(result.ErrorMessage);
             }
 
+        }
+
+        [HttpGet("featuredDeals")]
+        public async Task<ActionResult<IEnumerable<FeaturedDealHotelDto>>> GetHotelWithFeaturedDeals()
+        {
+            var result = await _mediator.Send(new GetHotelsWithFeaturedDealsQuery());
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<IEnumerable<FeaturedDealHotelDto>>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
         }
 
     }
