@@ -56,7 +56,6 @@ builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IHotelTypeRepository, HotelTypeRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IFeaturedDealsRepository, FeaturedDealsRepository>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
 
 

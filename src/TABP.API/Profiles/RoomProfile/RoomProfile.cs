@@ -15,7 +15,6 @@ namespace TABP.API.Profiles.RoomProfile
             CreateMap<RoomType, RoomTypeDto>();
             CreateMap<Room, UpdateRoomDto>();
             CreateMap<UpdateRoomDto, Room>();
-            CreateMap<Room, FeaturedDealRoomDto>();
         }
     }
 }

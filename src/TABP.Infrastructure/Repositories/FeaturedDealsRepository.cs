@@ -60,10 +60,5 @@ namespace TABP.Infrastructure.Repositories
 
             return await featuredDealQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
-
-        public async Task<FeaturedDeal> GetFeaturedDealByRoomIdAsync(Guid roomId)
-        {
-            return await _dbContext.FeaturedDeals.FirstOrDefaultAsync(f => f.RoomId == roomId);
-        }
     }
 }

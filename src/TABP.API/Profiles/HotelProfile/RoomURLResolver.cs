@@ -8,7 +8,7 @@ namespace TABP.API.Profiles
     {
         public string Resolve(Hotel source, HotelDto destination, string destMember, ResolutionContext context)
         {
-            return $"/api/room?hotelId={source.HotelId}";
+            return $"/api/room?pageSize=30&hotelId={source.HotelId}";
         }
     }
 }

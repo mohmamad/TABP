@@ -35,9 +35,6 @@ namespace TABP.Infrastructure.Repositories
                  double? rating,
                  string? amenities,
                  Guid? hotelTypeId,
-                 string? hotelType,
-                 double? minPrice,
-                 double? maxPrice,
                  int pageSize,
                  int page
             )
@@ -68,18 +65,6 @@ namespace TABP.Infrastructure.Repositories
             {
                 hotelQuery = hotelQuery.Where(h => h.HotelTypeId == hotelTypeId);
             }
-            if (hotelType != null)
-            {
-                hotelQuery = hotelQuery.Where(h => h.HotelType.Type == hotelType);
-            }
-            if (minPrice != null)
-            {
-                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price >= minPrice));
-            }
-            if (maxPrice != null)
-            {
-                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price <= maxPrice));
-            }
 
             return await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
@@ -104,35 +89,6 @@ namespace TABP.Infrastructure.Repositories
         public async Task<HotelImage> GetHotelImageByHotelIdAsync(Guid hotelId)
         {
             return await _dbContext.HotelImages.FirstOrDefaultAsync(h => h.HotelId == hotelId);
-        }
-
-        public async Task<IEnumerable<Hotel>> GetHotelWithFeaturedDeals()
-        {
-            var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow)));
-            return hotels;
-        }
-
-        public async Task<IEnumerable<Hotel>> GetLatestVisitedHotelForUser(Guid userId)
-        {
-            var latestBookings = _dbContext.Bookings
-            .Include(b => b.Room) 
-            .Include(b => b.Room.Hotel)
-            .OrderByDescending(b => b.EndDate)
-            .ToList(); 
-
-            var latestBookingsByHotel = latestBookings
-                .GroupBy(b => b.Room.Hotel)
-                .SelectMany(g => g)
-                .ToList(); 
-
-            var latestHotels = latestBookingsByHotel
-                .Select(b => b.Room.Hotel)
-                .Where(h => h != null) 
-                .Distinct()
-                .Take(5)
-                .ToList();
-
-            return latestHotels;
         }
     }
 }

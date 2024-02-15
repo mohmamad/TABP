@@ -12,9 +12,6 @@ namespace TABP.Application.CQRS.Queries.HotelQueries
         public double? Rating;
         public string? Amenities;
         public Guid? HotelTypeId;
-        public string? HotelType;
-        public double? MinPrice;
-        public double? MaxPrice;
         public int PageSize = 30;
         public int Page = 1;
     }
