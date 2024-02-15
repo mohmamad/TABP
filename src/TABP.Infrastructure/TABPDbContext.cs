@@ -45,6 +45,8 @@ namespace TABP.Infrastructure
 
 
             SeedingUsers(modelBuilder);
+            SeedingHotelType(modelBuilder);
+            SeedingRoomType(modelBuilder);
         }
 
 
@@ -65,7 +67,43 @@ namespace TABP.Infrastructure
                 );
         }
 
-
-
+        private void SeedingHotelType(ModelBuilder mb)
+        {
+            mb.Entity<HotelType>().HasData
+                (
+                new HotelType
+                {
+                    HotelTypeId = Guid.NewGuid(),
+                    Type = "perfect"
+                }
+                );
+            mb.Entity<HotelType>().HasData
+               (
+               new HotelType
+               {
+                   HotelTypeId = Guid.NewGuid(),
+                   Type = "nice"
+               }
+               );
+        }
+        private void SeedingRoomType(ModelBuilder mb)
+        {
+            mb.Entity<RoomType>().HasData
+                (
+                new RoomType
+                {
+                    RoomTypeId = Guid.NewGuid(),
+                    Type = "perfect"
+                }
+                );
+            mb.Entity<RoomType>().HasData
+               (
+               new RoomType
+               {
+                   RoomTypeId = Guid.NewGuid(),
+                   Type = "nice"
+               }
+               );
+        }
     }
 }

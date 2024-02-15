@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using TABP.API.DTOs.FeaturedDealsDtos;
 using TABP.API.DTOs.HotelDtos;
-using TABP.API.DTOs.LocationDtos;
 using TABP.Application.CQRS.Commands.HotelCommands;
 using TABP.Application.CQRS.Commands.LocationCommands;
 using TABP.Application.CQRS.Queries.HotelQueries;
@@ -54,29 +54,8 @@ namespace TABP.API.Controllers
             }
         }
 
-        [HttpPost("hotelType")]
-        public async Task<ActionResult<HotelTypeDto>> AddHotelType(AddHotelTypeDto addHotelTypeDto)
-        {
-            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
-
-            if (userLevel == "2")
-            {
-                var result = await _mediator.Send(new AddHotelTypeCommand
-                {
-                    HotelType = addHotelTypeDto.HotelType
-                });
-                var dtoToReturn = _mapper.Map<HotelTypeDto>(result.Data);
-                return Ok(dtoToReturn);
-            }
-            else
-            {
-                return Unauthorized();
-            }
-
-        }
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HotelDto>>> GetHotel
+        public async Task<ActionResult<IEnumerable<FoundHotelDto>>> GetHotel
             (
                 [FromQuery] Guid? hotelId,
                 [FromQuery] string? hotelName,
@@ -84,6 +63,9 @@ namespace TABP.API.Controllers
                 [FromQuery] double? rating,
                 [FromQuery] string? amenities,
                 [FromQuery] Guid? hotelTypeId,
+                [FromQuery] string? hotelType,
+                [FromQuery] double? minPrice,
+                [FromQuery] double? maxPrice,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -96,12 +78,26 @@ namespace TABP.API.Controllers
                 Rating = rating,
                 Amenities = amenities,
                 HotelTypeId = hotelTypeId,
+                HotelType = hotelType,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
                 PageSize = pageSize,
                 Page = page
             });
+            if (result.IsSuccess)
+            {
+                var hotelDto = _mapper.Map<IEnumerable<FoundHotelDto>>(result.Data);
+                foreach (var hotel in hotelDto)
+                {
+                    hotel.RoomsURL = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}";
+                }
+                return Ok(hotelDto);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
 
-            var hotelDto = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
-            return Ok(hotelDto);
         }
 
         [HttpPatch("{hotelId}")]
@@ -148,25 +144,7 @@ namespace TABP.API.Controllers
 
         }
 
-        [HttpGet("hotelType/{hotelTypeId}")]
-        public async Task<ActionResult<HotelTypeDto>> GetHotelTypeById(Guid hotelTypeId)
-        {
-            var result = await _mediator.Send(new GetHotelTypeByIdQuery
-            {
-                hotelTypeId = hotelTypeId
-            });
-            if (result.IsSuccess)
-            {
-                var dtoToReturn = _mapper.Map<HotelTypeDto>(result.Data);
-                return Ok(dtoToReturn);
-            }
-            else
-            {
-                return BadRequest(result.ErrorMessage);
-            }
-            
-        }
-        [HttpPost("hotelImage/{hotelId}")]
+        [HttpPost("{hotelId}/hotelImage")]
         public async Task<ActionResult<HotelImageDto>> AddHotelImage([FromForm] AddHotelImageDto imageFile, Guid hotelId)
         {
             var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
@@ -192,10 +170,10 @@ namespace TABP.API.Controllers
             {
                 return Unauthorized();
             }
-                
+
         }
 
-        [HttpGet("hotelImage/{hotelId}")]
+        [HttpGet("{hotelId}/hotelImage")]
         public async Task<ActionResult<HotelImageDto>> GetHotelImageByHotelId(Guid hotelId)
         {
             var result = await _mediator.Send(new GetHotelImageByHotelIdQuery
@@ -205,6 +183,37 @@ namespace TABP.API.Controllers
             if (result.IsSuccess)
             {
                 var dtoToReturn = _mapper.Map<HotelImageDto>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+        }
+
+        [HttpGet("featuredDeals")]
+        public async Task<ActionResult<IEnumerable<FeaturedDealHotelDto>>> GetHotelWithFeaturedDeals()
+        {
+            var result = await _mediator.Send(new GetHotelsWithFeaturedDealsQuery());
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<IEnumerable<FeaturedDealHotelDto>>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
+        }
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<HotelDto>>> GetLastVistedHotelForUser(Guid userId)
+        {
+            var result = await _mediator.Send(new GetLatestVisitedHotelsForUserQuery { UserId = userId});
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
                 return Ok(dtoToReturn);
             }
             else

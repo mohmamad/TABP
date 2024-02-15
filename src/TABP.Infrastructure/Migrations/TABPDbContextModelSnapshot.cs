@@ -22,21 +22,6 @@ namespace TABP.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BookingRoom", b =>
-                {
-                    b.Property<Guid>("BookingsBookingId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoomsRoomId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BookingsBookingId", "RoomsRoomId");
-
-                    b.HasIndex("RoomsRoomId");
-
-                    b.ToTable("BookingRoom");
-                });
-
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
                 {
                     b.Property<Guid>("BookingId")
@@ -45,12 +30,6 @@ namespace TABP.Infrastructure.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("HotelId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
 
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uniqueidentifier");
@@ -63,7 +42,7 @@ namespace TABP.Infrastructure.Migrations
 
                     b.HasKey("BookingId");
 
-                    b.HasIndex("HotelId");
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("UserId");
 
@@ -190,6 +169,18 @@ namespace TABP.Infrastructure.Migrations
                     b.HasKey("HotelTypeId");
 
                     b.ToTable("HotelTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            HotelTypeId = new Guid("d24cc6a6-800c-4639-b232-07c3ef0107fd"),
+                            Type = "perfect"
+                        },
+                        new
+                        {
+                            HotelTypeId = new Guid("9a662008-8fc0-45b6-a6cb-4381916a3ca6"),
+                            Type = "nice"
+                        });
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Location", b =>
@@ -299,6 +290,18 @@ namespace TABP.Infrastructure.Migrations
                     b.HasKey("RoomTypeId");
 
                     b.ToTable("RoomTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            RoomTypeId = new Guid("bb5cd96d-f6f3-47c7-9619-0fdc28ef77d6"),
+                            Type = "perfect"
+                        },
+                        new
+                        {
+                            RoomTypeId = new Guid("f9bd70e8-29cc-4492-8adb-b7d1de5a6d8d"),
+                            Type = "nice"
+                        });
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.User", b =>
@@ -336,8 +339,8 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("eeea62a5-263b-442d-a2d9-9798765c60c5"),
-                            BirthDate = new DateTime(2024, 2, 5, 5, 30, 25, 723, DateTimeKind.Local).AddTicks(8167),
+                            UserId = new Guid("5e551827-93bb-41c6-ad95-da41bf0b1ccf"),
+                            BirthDate = new DateTime(2024, 2, 10, 17, 35, 19, 95, DateTimeKind.Local).AddTicks(3556),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
@@ -346,26 +349,11 @@ namespace TABP.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BookingRoom", b =>
-                {
-                    b.HasOne("TABP.Domain.Entities.Booking", null)
-                        .WithMany()
-                        .HasForeignKey("BookingsBookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TABP.Domain.Entities.Room", null)
-                        .WithMany()
-                        .HasForeignKey("RoomsRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
                 {
-                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                    b.HasOne("TABP.Domain.Entities.Room", "Room")
                         .WithMany("Bookings")
-                        .HasForeignKey("HotelId")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -375,7 +363,7 @@ namespace TABP.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Hotel");
+                    b.Navigation("Room");
 
                     b.Navigation("User");
                 });
@@ -468,8 +456,6 @@ namespace TABP.Infrastructure.Migrations
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Images");
 
                     b.Navigation("Location")
@@ -487,6 +473,8 @@ namespace TABP.Infrastructure.Migrations
 
             modelBuilder.Entity("TABP.Domain.Entities.Room", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("FeaturedDeals");
                 });
 

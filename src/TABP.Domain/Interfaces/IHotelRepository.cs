@@ -14,6 +14,9 @@ namespace TABP.Domain.Interfaces
                 double? rating,
                 string? amenities,
                 Guid? hotelTypeId,
+                string? hotelType,
+                double? minPrice,
+                double? maxPrice,
                 int pageSize = 30,
                 int page = 1
            );
@@ -21,5 +24,7 @@ namespace TABP.Domain.Interfaces
         public Task<Hotel> GetHotelById(Guid hotelId);
         public Task<HotelImage> AddHotelImageAsync(HotelImage hotelImage);
         public Task<HotelImage> GetHotelImageByHotelIdAsync(Guid hotelId);
+        public Task<IEnumerable<Hotel>> GetHotelWithFeaturedDeals();
+        public Task<IEnumerable<Hotel>> GetLatestVisitedHotelForUser(Guid userId);
     }
 }

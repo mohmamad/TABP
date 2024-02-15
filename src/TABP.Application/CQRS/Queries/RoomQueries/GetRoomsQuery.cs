@@ -12,7 +12,8 @@ namespace TABP.Application.CQRS.Queries.RoomQueries
         public int? RoomNumber;
         public double? Price;
         public int? Capacity;
-        public bool? isAvailable;
+        public double? MaxPrice;
+        public double? MinPrice;
         public int PageSize = 30;
         public int Page = 1;
     }

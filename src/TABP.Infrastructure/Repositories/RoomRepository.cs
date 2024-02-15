@@ -28,7 +28,8 @@ namespace TABP.Infrastructure.Repositories
                 int? roomNumber,
                 double? price,
                 int? capacity,
-                bool? isAvaiable,
+                double? maxPrice,
+                double? minPrice,
                 int pageSize,
                 int page
             )
@@ -59,6 +60,14 @@ namespace TABP.Infrastructure.Repositories
             {
                 roomQuery = roomQuery.Where(r => r.Capacity == capacity);
             }
+            if (maxPrice != null)
+            {
+                roomQuery = roomQuery.Where(r => r.Price <= maxPrice);
+            }
+            if (minPrice != null)
+            {
+                roomQuery = roomQuery.Where(r => r.Price >= minPrice);
+            }
 
             return await roomQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
@@ -85,5 +94,10 @@ namespace TABP.Infrastructure.Repositories
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<IEnumerable<Room>> GetRoomsWithFeaturedDealsByHotelIdAsync(Guid hotelId)
+        {
+            var rooms = _dbContext.Rooms.Where(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow));
+            return rooms;
+        }
     }
 }

@@ -14,7 +14,8 @@ namespace TABP.Domain.Interfaces
                int? roomNumber,
                double? price,
                int? capacity,
-               bool? isAvaiable,
+               double? maxPrice,
+               double? minPrice,
                int pageSize = 30,
                int page = 1
            );
@@ -23,5 +24,6 @@ namespace TABP.Domain.Interfaces
         public Task<RoomType> GetRoomTypeByRoomIdAsync(Guid roomTypeId);
         public Task<Room> GetRoomByIdAsync(Guid roomId);
         public Task<bool> SaveChangesAsync();
+        public Task<IEnumerable<Room>> GetRoomsWithFeaturedDealsByHotelIdAsync(Guid hotelId);
     }
 }

@@ -9,7 +9,7 @@ using TABP.Domain.Entities;
 namespace TABP.API.Controllers
 {
     [ApiController]
-    [Route("api/room/FeaturedDeal")]
+    [Route("api/room")]
     public class FeaturedDealsController : Controller
     {
         private readonly IMediator _mediator;
@@ -19,7 +19,7 @@ namespace TABP.API.Controllers
             _mapper = mapper;
             _mediator = mediator;
         }
-        [HttpPost("{roomId}")]
+        [HttpPost("{roomId}/featuredDeal")]
         public async Task<ActionResult<FeaturedDealsDto>> AddFeaturedDeal(FeaturedDealsAddDto featuredDealsAddDto, Guid roomId)
         {
             var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
@@ -31,8 +31,8 @@ namespace TABP.API.Controllers
                     RoomId = roomId,
                     Description = featuredDealsAddDto.Description,
                     Discount = featuredDealsAddDto.Discount,
-                    StartDate = featuredDealsAddDto.StartDate,
-                    EndDate = featuredDealsAddDto.EndDate,
+                    StartDate = featuredDealsAddDto.StartDate.ToUniversalTime(),
+                    EndDate = featuredDealsAddDto.EndDate.ToUniversalTime(),
                 });
                 if (result.IsSuccess)
                 {
@@ -51,7 +51,7 @@ namespace TABP.API.Controllers
             
 
         }
-        [HttpGet]
+        [HttpGet("featuredDeal")]
         public async Task<ActionResult<IEnumerable<FeaturedDealsDto>>> GetFeaturedDeals
             (
                 [FromQuery] Guid? featuredDealId,
