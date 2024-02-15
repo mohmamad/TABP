@@ -23,21 +23,11 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelQueryHandlers
                     request.Rating,
                     request.Amenities,
                     request.HotelTypeId,
-                    request.HotelType,
-                    request.MinPrice,
-                    request.MaxPrice,
                     request.PageSize,
                     request.Page
                 );
-            if( hotels != null )
-            {
-                return Result<IEnumerable<Hotel>>.Success(hotels);
-            }
-            else
-            {
-                return Result<IEnumerable<Hotel>>.Failure("Hotel Not found.");
-            }
-        }
 
+            return Result<IEnumerable<Hotel>>.Success(hotels);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TABP.Infrastructure;
 
@@ -11,9 +12,11 @@ using TABP.Infrastructure;
 namespace TABP.Infrastructure.Migrations
 {
     [DbContext(typeof(TABPDbContext))]
-    partial class TABPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240204033838_remove_Unigue_From_RoomId_IN_FeaturedDeals")]
+    partial class remove_Unigue_From_RoomId_IN_FeaturedDeals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,8 +124,6 @@ namespace TABP.Infrastructure.Migrations
 
                     b.HasKey("FeaturedDealId");
 
-                    b.HasIndex("RoomId");
-
                     b.ToTable("FeaturedDeals");
                 });
 
@@ -174,7 +175,7 @@ namespace TABP.Infrastructure.Migrations
 
                     b.HasIndex("HotelId");
 
-                    b.ToTable("HotelImages");
+                    b.ToTable("HotelImage");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
@@ -256,7 +257,6 @@ namespace TABP.Infrastructure.Migrations
             modelBuilder.Entity("TABP.Domain.Entities.Room", b =>
                 {
                     b.Property<Guid>("RoomId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Capacity")
@@ -336,8 +336,8 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("eeea62a5-263b-442d-a2d9-9798765c60c5"),
-                            BirthDate = new DateTime(2024, 2, 5, 5, 30, 25, 723, DateTimeKind.Local).AddTicks(8167),
+                            UserId = new Guid("571ee1ee-158d-42d3-a0d1-29055e50547f"),
+                            BirthDate = new DateTime(2024, 2, 4, 5, 38, 38, 279, DateTimeKind.Local).AddTicks(9641),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
@@ -378,15 +378,6 @@ namespace TABP.Infrastructure.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TABP.Domain.Entities.FeaturedDeal", b =>
-                {
-                    b.HasOne("TABP.Domain.Entities.Room", "Room")
-                        .WithMany("FeaturedDeals")
-                        .HasForeignKey("RoomId");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
@@ -455,15 +446,26 @@ namespace TABP.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("TABP.Domain.Entities.FeaturedDeal", "FeaturedDeal")
+                        .WithMany("Rooms")
+                        .HasForeignKey("RoomId");
+
                     b.HasOne("TABP.Domain.Entities.RoomType", "RoomType")
                         .WithMany("rooms")
                         .HasForeignKey("RoomTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("FeaturedDeal");
+
                     b.Navigation("Hotel");
 
                     b.Navigation("RoomType");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.FeaturedDeal", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
@@ -483,11 +485,6 @@ namespace TABP.Infrastructure.Migrations
             modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
                 {
                     b.Navigation("Hotels");
-                });
-
-            modelBuilder.Entity("TABP.Domain.Entities.Room", b =>
-                {
-                    b.Navigation("FeaturedDeals");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.RoomType", b =>

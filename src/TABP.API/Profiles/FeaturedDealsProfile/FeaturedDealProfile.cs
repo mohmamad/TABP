@@ -6,12 +6,9 @@ namespace TABP.API.Profiles.FeaturedDealsProfile
 {
     public class FeaturedDealProfile : Profile
     {
-        public FeaturedDealProfile()
+        public FeaturedDealProfile() 
         {
             CreateMap<FeaturedDeal, FeaturedDealsDto>();
-
-            CreateMap<Hotel, FeaturedDealHotelDto>()
-                .ForMember(dest => dest.RoomsURL, opt => opt.MapFrom<FeaturedDealRoomURLResolver>());
         }
 
     }

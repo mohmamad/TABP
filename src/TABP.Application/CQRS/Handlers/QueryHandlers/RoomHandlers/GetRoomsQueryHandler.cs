@@ -23,8 +23,7 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.RoomQueryHandlers
                     request.RoomNumber,
                     request.Price,
                     request.Capacity,
-                    request.MaxPrice,
-                    request.MinPrice,
+                    request.isAvailable,
                     request.PageSize,
                     request.Page
                 );

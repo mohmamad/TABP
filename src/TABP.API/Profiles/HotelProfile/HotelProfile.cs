@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using TABP.API.DTOs.HotelDtos;
-using TABP.API.Profiles.FoundHotelUrlResolver;
 using TABP.Domain.Entities;
 
 namespace TABP.API.Profiles
@@ -16,12 +15,6 @@ namespace TABP.API.Profiles
                 .ForMember(dest => dest.HotelTypeURL, opt => opt.MapFrom<HotelTypeResolver>())
                 .ForMember(dest => dest.AddHotelImageURL, opt => opt.MapFrom<AddHotelImageURLResolver>())
                 .ForMember(dest => dest.HotelImageURL, opt => opt.MapFrom<HotelImageURLResolver>());
-
-            CreateMap<Hotel, FoundHotelDto>()
-                .ForMember(dest => dest.RoomsURL, opt => opt.MapFrom<FoundRoomURLResolver>())
-                .ForMember(dest => dest.HotelLocationURL, opt => opt.MapFrom<FoundHotelLocationURLResolver>())
-                .ForMember(dest => dest.HotelTypeURL, opt => opt.MapFrom<FoundHotelTypeResolver>())
-                .ForMember(dest => dest.HotelImageURL, opt => opt.MapFrom<FoundHotelImageURLResolver>());
 
             CreateMap<Hotel, UpdateHotelDto>();
             CreateMap<UpdateHotelDto, Hotel>();

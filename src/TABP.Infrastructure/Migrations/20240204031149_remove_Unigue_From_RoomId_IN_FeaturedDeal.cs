@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace TABP.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Fix_Booking_Error : Migration
+    public partial class remove_Unigue_From_RoomId_IN_FeaturedDeal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -91,7 +89,36 @@ namespace TABP.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HotelImages",
+                name: "Bookings",
+                columns: table => new
+                {
+                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HotelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => x.BookingId);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Hotels_HotelId",
+                        column: x => x.HotelId,
+                        principalTable: "Hotels",
+                        principalColumn: "HotelId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HotelImage",
                 columns: table => new
                 {
                     HotelImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -100,9 +127,9 @@ namespace TABP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HotelImages", x => x.HotelImageId);
+                    table.PrimaryKey("PK_HotelImage", x => x.HotelImageId);
                     table.ForeignKey(
-                        name: "FK_HotelImages_Hotels_HotelId",
+                        name: "FK_HotelImage_Hotels_HotelId",
                         column: x => x.HotelId,
                         principalTable: "Hotels",
                         principalColumn: "HotelId",
@@ -193,29 +220,26 @@ namespace TABP.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bookings",
+                name: "BookingRoom",
                 columns: table => new
                 {
-                    BookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    BookingsBookingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoomsRoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bookings", x => x.BookingId);
+                    table.PrimaryKey("PK_BookingRoom", x => new { x.BookingsBookingId, x.RoomsRoomId });
                     table.ForeignKey(
-                        name: "FK_Bookings_Rooms_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "Rooms",
-                        principalColumn: "RoomId",
+                        name: "FK_BookingRoom_Bookings_BookingsBookingId",
+                        column: x => x.BookingsBookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "BookingId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bookings_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
+                        name: "FK_BookingRoom_Rooms_RoomsRoomId",
+                        column: x => x.RoomsRoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "RoomId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -241,32 +265,19 @@ namespace TABP.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "HotelTypes",
-                columns: new[] { "HotelTypeId", "Type" },
-                values: new object[,]
-                {
-                    { new Guid("9a662008-8fc0-45b6-a6cb-4381916a3ca6"), "nice" },
-                    { new Guid("d24cc6a6-800c-4639-b232-07c3ef0107fd"), "perfect" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "RoomTypes",
-                columns: new[] { "RoomTypeId", "Type" },
-                values: new object[,]
-                {
-                    { new Guid("bb5cd96d-f6f3-47c7-9619-0fdc28ef77d6"), "perfect" },
-                    { new Guid("f9bd70e8-29cc-4492-8adb-b7d1de5a6d8d"), "nice" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "BirthDate", "Email", "FirstName", "LastName", "Password", "UserLevel" },
-                values: new object[] { new Guid("5e551827-93bb-41c6-ad95-da41bf0b1ccf"), new DateTime(2024, 2, 10, 17, 35, 19, 95, DateTimeKind.Local).AddTicks(3556), "mohamad.moghrabi@gmail.com", "mohamad", "moghrabi", "1234", 2 });
+                values: new object[] { new Guid("2c88aab2-68cc-4b3e-be94-1d864d2782a6"), new DateTime(2024, 2, 4, 5, 11, 49, 555, DateTimeKind.Local).AddTicks(9605), "mohamad.moghrabi@gmail.com", "mohamad", "moghrabi", "1234", 2 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_RoomId",
+                name: "IX_BookingRoom_RoomsRoomId",
+                table: "BookingRoom",
+                column: "RoomsRoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_HotelId",
                 table: "Bookings",
-                column: "RoomId");
+                column: "HotelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",
@@ -276,11 +287,12 @@ namespace TABP.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_FeaturedDeals_RoomId",
                 table: "FeaturedDeals",
-                column: "RoomId");
+                column: "RoomId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_HotelImages_HotelId",
-                table: "HotelImages",
+                name: "IX_HotelImage_HotelId",
+                table: "HotelImage",
                 column: "HotelId");
 
             migrationBuilder.CreateIndex(
@@ -324,19 +336,22 @@ namespace TABP.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "BookingRoom");
 
             migrationBuilder.DropTable(
                 name: "FeaturedDeals");
 
             migrationBuilder.DropTable(
-                name: "HotelImages");
+                name: "HotelImage");
 
             migrationBuilder.DropTable(
                 name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "Rooms");

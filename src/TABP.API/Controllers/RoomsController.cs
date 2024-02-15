@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.RoomCommands;
-using TABP.Application.CQRS.Queries.FeaturedDeals;
+using TABP.Application.CQRS.Queries;
 using TABP.Application.CQRS.Queries.RoomQueries;
 
 namespace TABP.API.Controllers
@@ -21,7 +21,6 @@ namespace TABP.API.Controllers
             _mediator = mediator;
             _mapper = mapper;
         }
-
         [HttpPost("{hotelId}")]
         public async Task<ActionResult<RoomDto>> AddRoom(AddRoomDto addRoomDto, Guid hotelId)
         {
@@ -54,6 +53,26 @@ namespace TABP.API.Controllers
             }
         }
 
+        [HttpPost("roomType")]
+        public async Task<ActionResult<RoomTypeDto>> AddRoomType(AddRoomTypeDto addRoomTypeDto)
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel == "2")
+            {
+                var result = await _mediator.Send(new AddRoomTypeCommand
+                {
+                    Type = addRoomTypeDto.Type,
+                });
+                var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);
+                return Ok(roomTypeDto);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomDto>>> GetRoom
             (
@@ -63,8 +82,7 @@ namespace TABP.API.Controllers
                 [FromQuery] int? roomNumber,
                 [FromQuery] double? price,
                 [FromQuery] int? capacity,
-                [FromQuery] double? maxPrice,
-                [FromQuery] double? minPrice,
+                [FromQuery] bool? isAvaiable,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -77,8 +95,6 @@ namespace TABP.API.Controllers
                 RoomNumber = roomNumber,
                 Price = price,
                 Capacity = capacity,
-                MaxPrice = maxPrice,
-                MinPrice = minPrice,
                 PageSize = pageSize,
                 Page = page
             });
@@ -86,6 +102,17 @@ namespace TABP.API.Controllers
             var roomDto = _mapper.Map<IEnumerable<RoomDto>>(result.Data);
             return Ok(roomDto);
 
+        }
+
+        [HttpGet("roomType/{roomtypeId}")]
+        public async Task<ActionResult<RoomTypeDto>> GetRoomTypeByRoomId(Guid roomTypeId)
+        {
+            var result = await _mediator.Send(new GetRoomTypeByIdQuery
+            {
+                RoomTypeId = roomTypeId
+            });
+            var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);
+            return Ok(roomTypeDto);
         }
 
         [HttpPatch("{roomId}")]
@@ -128,34 +155,5 @@ namespace TABP.API.Controllers
             }
 
         }
-
-        [HttpGet("featuredDeal/{hotelId}")]
-        public async Task<ActionResult<IEnumerable<FeaturedDealRoomDto>>> GetRoomsWithFeatureddealsByHotelId(Guid hotelId)
-        {
-            
-            var result = await _mediator.Send(new GetRoomsWithFeatureddealsByHotelIdQuery { HotelId = hotelId });
-            
-            
-            if (result.IsSuccess)
-            {
-                var roomDto = _mapper.Map<IEnumerable<FeaturedDealRoomDto>>(result.Data);
-                foreach (var room in roomDto)
-                {
-                    var featuredDeal = await _mediator.Send(new GetFeaturedDealsQuery { RoomId = room.RoomId });
-                    if (featuredDeal.IsSuccess)
-                    {
-                        room.DiscountPrice = (1 - featuredDeal.Data.ToList()[0].Discount) * room.Price;
-                        room.Discount = featuredDeal.Data.ToList()[0].Discount;
-                    }
-                }
-                return Ok(roomDto);
-            }
-            else 
-            { 
-                return BadRequest(result.ErrorMessage); 
-            }
-            
-        }
-
     }
 }

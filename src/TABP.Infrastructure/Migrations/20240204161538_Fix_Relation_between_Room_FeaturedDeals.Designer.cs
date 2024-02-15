@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TABP.Infrastructure;
 
@@ -11,9 +12,11 @@ using TABP.Infrastructure;
 namespace TABP.Infrastructure.Migrations
 {
     [DbContext(typeof(TABPDbContext))]
-    partial class TABPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240204161538_Fix_Relation_between_Room_FeaturedDeals")]
+    partial class Fix_Relation_between_Room_FeaturedDeals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,7 +177,7 @@ namespace TABP.Infrastructure.Migrations
 
                     b.HasIndex("HotelId");
 
-                    b.ToTable("HotelImages");
+                    b.ToTable("HotelImage");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.HotelType", b =>
@@ -336,8 +339,8 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("eeea62a5-263b-442d-a2d9-9798765c60c5"),
-                            BirthDate = new DateTime(2024, 2, 5, 5, 30, 25, 723, DateTimeKind.Local).AddTicks(8167),
+                            UserId = new Guid("f3f031e4-3851-47ac-adc2-138aa73ec868"),
+                            BirthDate = new DateTime(2024, 2, 4, 18, 15, 38, 687, DateTimeKind.Local).AddTicks(6240),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
@@ -384,7 +387,9 @@ namespace TABP.Infrastructure.Migrations
                 {
                     b.HasOne("TABP.Domain.Entities.Room", "Room")
                         .WithMany("FeaturedDeals")
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Room");
                 });
