@@ -78,7 +78,7 @@ namespace TABP.Infrastructure.Repositories
             }
             if (maxPrice != null)
             {
-               hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price <= maxPrice));
+                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price <= maxPrice));
             }
 
             return await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -110,6 +110,29 @@ namespace TABP.Infrastructure.Repositories
         {
             var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow)));
             return hotels;
+        }
+
+        public async Task<IEnumerable<Hotel>> GetLatestVisitedHotelForUser(Guid userId)
+        {
+            var latestBookings = _dbContext.Bookings
+            .Include(b => b.Room) 
+            .Include(b => b.Room.Hotel)
+            .OrderByDescending(b => b.EndDate)
+            .ToList(); 
+
+            var latestBookingsByHotel = latestBookings
+                .GroupBy(b => b.Room.Hotel)
+                .SelectMany(g => g)
+                .ToList(); 
+
+            var latestHotels = latestBookingsByHotel
+                .Select(b => b.Room.Hotel)
+                .Where(h => h != null) 
+                .Distinct()
+                .Take(5)
+                .ToList();
+
+            return latestHotels;
         }
     }
 }

@@ -207,6 +207,21 @@ namespace TABP.API.Controllers
             }
             
         }
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<HotelDto>>> GetLastVistedHotelForUser(Guid userId)
+        {
+            var result = await _mediator.Send(new GetLatestVisitedHotelsForUserQuery { UserId = userId});
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
+        }
 
     }
 }
