@@ -83,6 +83,7 @@ namespace TABP.API.Controllers
                     {
                         UserId = userId,
                         RoomId = roomId,
+                        priceToPay = addPaymentDto.Price,
                         StartDate = startDate,
                         EndDate = endDate
                     });

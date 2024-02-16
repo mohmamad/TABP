@@ -7,6 +7,6 @@
         public string CityName { get; set; }
         public string CityDescription { get; set; }
         public string CityImagePath { get; set; }
-        List<Location> locations { get; set; }
+        public List<Location> locations { get; set; }
     }
 }

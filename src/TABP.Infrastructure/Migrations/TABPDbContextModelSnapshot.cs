@@ -173,12 +173,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            HotelTypeId = new Guid("d24cc6a6-800c-4639-b232-07c3ef0107fd"),
+                            HotelTypeId = new Guid("17dec853-2fd8-4b7b-a41e-67d250dd313c"),
                             Type = "perfect"
                         },
                         new
                         {
-                            HotelTypeId = new Guid("9a662008-8fc0-45b6-a6cb-4381916a3ca6"),
+                            HotelTypeId = new Guid("0c1318a9-804c-4ccd-a894-cfd2b255ae34"),
                             Type = "nice"
                         });
                 });
@@ -294,12 +294,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoomTypeId = new Guid("bb5cd96d-f6f3-47c7-9619-0fdc28ef77d6"),
+                            RoomTypeId = new Guid("7828f8e5-28b4-4a5f-b06a-cdcf687e9e2a"),
                             Type = "perfect"
                         },
                         new
                         {
-                            RoomTypeId = new Guid("f9bd70e8-29cc-4492-8adb-b7d1de5a6d8d"),
+                            RoomTypeId = new Guid("f90796ee-836b-4515-8093-e8aa6cd3019d"),
                             Type = "nice"
                         });
                 });
@@ -339,8 +339,8 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("5e551827-93bb-41c6-ad95-da41bf0b1ccf"),
-                            BirthDate = new DateTime(2024, 2, 10, 17, 35, 19, 95, DateTimeKind.Local).AddTicks(3556),
+                            UserId = new Guid("a24bda68-3b47-4bef-9cc1-be3475def205"),
+                            BirthDate = new DateTime(2024, 2, 16, 23, 44, 47, 727, DateTimeKind.Local).AddTicks(8329),
                             Email = "mohamad.moghrabi@gmail.com",
                             FirstName = "mohamad",
                             LastName = "moghrabi",
@@ -400,7 +400,7 @@ namespace TABP.Infrastructure.Migrations
             modelBuilder.Entity("TABP.Domain.Entities.Location", b =>
                 {
                     b.HasOne("TABP.Domain.Entities.City", "City")
-                        .WithMany()
+                        .WithMany("locations")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -452,6 +452,11 @@ namespace TABP.Infrastructure.Migrations
                     b.Navigation("Hotel");
 
                     b.Navigation("RoomType");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.City", b =>
+                {
+                    b.Navigation("locations");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>

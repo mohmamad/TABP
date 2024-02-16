@@ -63,7 +63,7 @@ namespace TABP.Infrastructure.Repositories
 
         public async Task<FeaturedDeal> GetFeaturedDealByRoomIdAsync(Guid roomId)
         {
-            return await _dbContext.FeaturedDeals.FirstOrDefaultAsync(f => f.RoomId == roomId);
+            return await _dbContext.FeaturedDeals.FirstOrDefaultAsync(f => f.RoomId == roomId && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
         }
     }
 }
