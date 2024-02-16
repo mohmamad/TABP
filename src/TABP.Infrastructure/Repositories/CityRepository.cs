@@ -18,5 +18,29 @@ namespace TABP.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return city;
         } 
+
+        public async Task<IEnumerable<City>> GetMostVistedCitiesAsync()
+        {
+            var mostBookedHotels = _dbContext.Bookings
+            .Include(b => b.Room.Hotel.Location)
+            .Include(b => b.Room.Hotel.Location.City)
+            .GroupBy(b => b.Room.Hotel)
+            .OrderByDescending(g => g.Count())
+            .Take(5)
+            .Select(g => g.Key)
+            .ToList();
+            List<Location> locations = new List<Location>();
+            foreach (var hotel in mostBookedHotels)
+            {
+                var location = _dbContext.Locations.Include(l => l.City).FirstOrDefault(l => l.HotelId == hotel.HotelId);
+                locations.Add(location);
+            }
+            //var locationOfMostBookedHotels = mostBookedHotels
+            //.Select(h => h.Location) // Navigate to the location from the hotel
+            //.Distinct() // Ensure unique locations
+            //.ToList();
+
+            return locations.Select(l => l.City).ToList();
+        }
     }
 }

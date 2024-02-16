@@ -107,5 +107,21 @@ namespace TABP.API.Controllers
                 return BadRequest(result.ErrorMessage);
             }
         }
+
+        [HttpGet("/api/location/cities/mostVisited")]
+        public async Task<ActionResult<IEnumerable<CityDto>>> GetMostVisitedCities()
+        {
+            var result = await _mediator.Send(new GetMostVisitedCitiesQuery());
+            if (result.IsSuccess)
+            {
+                var dtoToReturn = _mapper.Map<IEnumerable<CityDto>>(result.Data);
+                return Ok(dtoToReturn);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
+        }
     }
 }

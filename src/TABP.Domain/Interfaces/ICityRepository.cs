@@ -10,5 +10,6 @@ namespace TABP.Domain.Interfaces
     public interface ICityRepository
     {
         public Task<City> GetCityAsync(Guid CityId);
+        public Task<IEnumerable<City>> GetMostVistedCitiesAsync();
     }
 }
