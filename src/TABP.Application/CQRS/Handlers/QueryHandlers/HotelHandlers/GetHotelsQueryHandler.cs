@@ -15,6 +15,14 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelQueryHandlers
         }
         public async Task<Result<IEnumerable<Hotel>>> Handle(GetHotelsQuery request, CancellationToken cancellationToken)
         {
+            if(request.StartDate == null)
+            {
+                request.StartDate = DateTime.UtcNow;
+            }
+            if(request.EndDate == null)
+            {
+                request.EndDate = DateTime.UtcNow.AddDays(1);
+            }
             var hotels = await _hotelRepository.GetHotelsAsync
                 (
                     request.HotelId,
@@ -26,6 +34,9 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelQueryHandlers
                     request.HotelType,
                     request.MinPrice,
                     request.MaxPrice,
+                    request.StartDate,
+                    request.EndDate,
+                    request.City,
                     request.PageSize,
                     request.Page
                 );

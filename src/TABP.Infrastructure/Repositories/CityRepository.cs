@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
@@ -19,28 +19,20 @@ namespace TABP.Infrastructure.Repositories
             return city;
         } 
 
+
         public async Task<IEnumerable<City>> GetMostVistedCitiesAsync()
         {
-            var mostBookedHotels = _dbContext.Bookings
-            .Include(b => b.Room.Hotel.Location)
-            .Include(b => b.Room.Hotel.Location.City)
-            .GroupBy(b => b.Room.Hotel)
-            .OrderByDescending(g => g.Count())
-            .Take(5)
-            .Select(g => g.Key)
-            .ToList();
-            List<Location> locations = new List<Location>();
-            foreach (var hotel in mostBookedHotels)
-            {
-                var location = _dbContext.Locations.Include(l => l.City).FirstOrDefault(l => l.HotelId == hotel.HotelId);
-                locations.Add(location);
-            }
-            //var locationOfMostBookedHotels = mostBookedHotels
-            //.Select(h => h.Location) // Navigate to the location from the hotel
-            //.Distinct() // Ensure unique locations
-            //.ToList();
-
-            return locations.Select(l => l.City).ToList();
+            var mostVisitedCities = (from booking in _dbContext.Bookings
+                                         join room in _dbContext.Rooms on booking.RoomId equals room.RoomId
+                                         join hotel in _dbContext.Hotels on room.HotelId equals hotel.HotelId
+                                         join location in _dbContext.Locations on hotel.HotelId equals location.HotelId
+                                         join city in _dbContext.Cities on location.CityId equals city.CityId
+                                         group city by city into g
+                                         orderby g.Count() descending
+                                         select g.Key)
+                                        .Take(5)
+                                        .ToList();
+            return mostVisitedCities;
         }
     }
 }

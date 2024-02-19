@@ -15,7 +15,10 @@ namespace TABP.Application.CQRS.Queries.HotelQueries
         public string? HotelType;
         public double? MinPrice;
         public double? MaxPrice;
-        public int PageSize = 30;
-        public int Page = 1;
+        public DateTime? StartDate;
+        public DateTime? EndDate;
+        public string? City;
+        public int PageSize;
+        public int Page;
     }
 }

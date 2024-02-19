@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
@@ -6,10 +7,12 @@ namespace TABP.Infrastructure.Repositories
 {
     public class HotelRepository : IHotelRepository
     {
+        private readonly IRoomRepository _roomRepository;
         private readonly TABPDbContext _dbContext;
-        public HotelRepository(TABPDbContext dbContext)
+        public HotelRepository(TABPDbContext dbContext, IRoomRepository roomRepository)
         {
             _dbContext = dbContext;
+            _roomRepository = roomRepository;
         }
 
         public async Task<Hotel> AddHotelAsync(Hotel hotel)
@@ -38,6 +41,9 @@ namespace TABP.Infrastructure.Repositories
                  string? hotelType,
                  double? minPrice,
                  double? maxPrice,
+                 DateTime? startDate,
+                 DateTime? endDate,
+                 string? city,
                  int pageSize,
                  int page
             )
@@ -80,6 +86,14 @@ namespace TABP.Infrastructure.Repositories
             {
                 hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Price <= maxPrice));
             }
+            if (startDate != null && endDate != null)
+            {
+                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Bookings.Any(b => !(b.StartDate >= startDate && b.StartDate <= endDate || b.EndDate >= startDate && b.EndDate <= endDate))));
+            }
+            if (city != null)
+            {
+                hotelQuery = hotelQuery.Where(h => h.Location.City.CityName == city);
+            }
 
             return await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
@@ -105,29 +119,28 @@ namespace TABP.Infrastructure.Repositories
         {
             return await _dbContext.HotelImages.FirstOrDefaultAsync(h => h.HotelId == hotelId);
         }
-
         public async Task<IEnumerable<Hotel>> GetHotelWithFeaturedDeals()
         {
-            var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow)));
+            var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow))).Take(5);
             return hotels;
         }
 
         public async Task<IEnumerable<Hotel>> GetLatestVisitedHotelForUser(Guid userId)
         {
             var latestBookings = _dbContext.Bookings
-            .Include(b => b.Room) 
+            .Include(b => b.Room)
             .Include(b => b.Room.Hotel)
             .OrderByDescending(b => b.EndDate)
-            .ToList(); 
+            .ToList();
 
             var latestBookingsByHotel = latestBookings
                 .GroupBy(b => b.Room.Hotel)
                 .SelectMany(g => g)
-                .ToList(); 
+                .ToList();
 
             var latestHotels = latestBookingsByHotel
                 .Select(b => b.Room.Hotel)
-                .Where(h => h != null) 
+                .Where(h => h != null)
                 .Distinct()
                 .Take(5)
                 .ToList();
