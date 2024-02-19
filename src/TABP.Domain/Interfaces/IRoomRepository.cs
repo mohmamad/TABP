@@ -16,6 +16,8 @@ namespace TABP.Domain.Interfaces
                int? capacity,
                double? maxPrice,
                double? minPrice,
+               DateTime? startDate,
+               DateTime? endDate,
                int pageSize = 30,
                int page = 1
            );

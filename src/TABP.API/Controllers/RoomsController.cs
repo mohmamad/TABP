@@ -65,6 +65,8 @@ namespace TABP.API.Controllers
                 [FromQuery] int? capacity,
                 [FromQuery] double? maxPrice,
                 [FromQuery] double? minPrice,
+                [FromQuery] DateTime startDate,
+                [FromQuery] DateTime endDate,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -80,6 +82,8 @@ namespace TABP.API.Controllers
                 Capacity = capacity,
                 MaxPrice = maxPrice,
                 MinPrice = minPrice,
+                StartDate = startDate,
+                EndDate = endDate,
                 PageSize = pageSize,
                 Page = page
             });

@@ -92,10 +92,16 @@ namespace TABP.API.Controllers
             });
             if (result.IsSuccess)
             {
-                var hotelDto = _mapper.Map<IEnumerable<FoundHotelDto>>(result.Data);
+                var hotelDto = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
                 foreach (var hotel in hotelDto)
                 {
-                    hotel.RoomsURL = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}";
+                    hotel.Links.Add(new DTOs.Link 
+                    {
+                        Rel = "rooms",
+                        Href = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}&startDate={startDate}&endDare={endDate}",
+                        Method = "Get"
+                    }); 
+
                 }
                 return Ok(hotelDto);
             }
