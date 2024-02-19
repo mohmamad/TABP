@@ -66,6 +66,9 @@ namespace TABP.API.Controllers
                 [FromQuery] string? hotelType,
                 [FromQuery] double? minPrice,
                 [FromQuery] double? maxPrice,
+                [FromQuery] DateTime? startDate,
+                [FromQuery] DateTime? endDate,
+                [FromQuery] string? city,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -81,6 +84,9 @@ namespace TABP.API.Controllers
                 HotelType = hotelType,
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
+                StartDate = startDate,
+                EndDate = endDate,
+                City = city,
                 PageSize = pageSize,
                 Page = page
             });

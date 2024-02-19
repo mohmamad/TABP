@@ -35,27 +35,27 @@ namespace TABP.Infrastructure.Repositories
 
             if (featuredDealId != null)
             {
-                featuredDealQuery = featuredDealQuery.Where(f => f.FeaturedDealId == featuredDealId);
+                featuredDealQuery = featuredDealQuery.Where(f => f.FeaturedDealId == featuredDealId && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
             }
             if (roomId != null)
             {
-                featuredDealQuery = featuredDealQuery.Where(f => f.RoomId == roomId);
+                featuredDealQuery = featuredDealQuery.Where(f => f.RoomId == roomId && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
             }
             if (description != null)
             {
-                featuredDealQuery = featuredDealQuery.Where(f => f.Description == description);
+                featuredDealQuery = featuredDealQuery.Where(f => f.Description == description && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
             }
             if (discount != null)
             {
-                featuredDealQuery = featuredDealQuery.Where(f => f.Discount == discount);
+                featuredDealQuery = featuredDealQuery.Where(f => f.Discount == discount && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
             }
             if (startDate != null)
             {
-                featuredDealQuery = featuredDealQuery.Where(f => f.StartDate == startDate);
+                featuredDealQuery = featuredDealQuery.Where(f => f.StartDate == startDate && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
             }
             if (endDate != null)
             {
-                featuredDealQuery = featuredDealQuery.Where(f => f.EndDate == endDate);
+                featuredDealQuery = featuredDealQuery.Where(f => f.EndDate == endDate && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
             }
 
             return await featuredDealQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();

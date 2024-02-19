@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 

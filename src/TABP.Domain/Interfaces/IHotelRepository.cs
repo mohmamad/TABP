@@ -17,6 +17,9 @@ namespace TABP.Domain.Interfaces
                 string? hotelType,
                 double? minPrice,
                 double? maxPrice,
+                DateTime? startDate,
+                DateTime? endDate,
+                string? city,
                 int pageSize = 30,
                 int page = 1
            );

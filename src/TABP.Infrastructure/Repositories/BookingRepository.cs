@@ -19,9 +19,16 @@ namespace TABP.Infrastructure.Repositories
             return booking;
         }
 
-        public async Task<Booking> GetLatestEndDate(Guid roomId, DateTime date)
+        public async Task<bool> IsRoomAvailable(Guid roomId, DateTime startDate, DateTime endDate)
         {
-            return await _dbContext.Bookings.FirstOrDefaultAsync(b => b.RoomId == roomId && b.EndDate > date);
+            var overlappingBookings = _dbContext.Bookings
+                .Where(b => b.RoomId == roomId &&
+                            ((b.StartDate >= startDate && b.StartDate <= endDate) ||
+                             (b.EndDate >= startDate && b.EndDate <= endDate)))
+                .ToList();
+
+            
+            return !overlappingBookings.Any();
         }
 
         public async Task<IEnumerable<Booking>> GetBookingAsync

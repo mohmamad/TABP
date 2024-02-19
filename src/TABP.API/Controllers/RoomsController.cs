@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -69,6 +69,7 @@ namespace TABP.API.Controllers
                 [FromQuery] int page = 1
             )
         {
+            
             var result = await _mediator.Send(new GetRoomsQuery
             {
                 RoomId = roomId,
@@ -82,9 +83,24 @@ namespace TABP.API.Controllers
                 PageSize = pageSize,
                 Page = page
             });
+            if (result.IsSuccess)
+            {
+                var roomDto = _mapper.Map<IEnumerable<RoomDto>>(result.Data);
 
-            var roomDto = _mapper.Map<IEnumerable<RoomDto>>(result.Data);
-            return Ok(roomDto);
+                foreach (var room in roomDto)
+                {
+                    var featuredDeal = await _mediator.Send(new GetFeaturedDealByRoomIdQuery { RoomId = room.RoomId });
+
+                    room.Discount = featuredDeal.IsSuccess ? featuredDeal.Data.Discount : 0.0;
+                }
+
+                return Ok(roomDto);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            
 
         }
 
@@ -129,13 +145,14 @@ namespace TABP.API.Controllers
 
         }
 
+
         [HttpGet("featuredDeal/{hotelId}")]
         public async Task<ActionResult<IEnumerable<FeaturedDealRoomDto>>> GetRoomsWithFeatureddealsByHotelId(Guid hotelId)
         {
-            
+
             var result = await _mediator.Send(new GetRoomsWithFeatureddealsByHotelIdQuery { HotelId = hotelId });
-            
-            
+
+
             if (result.IsSuccess)
             {
                 var roomDto = _mapper.Map<IEnumerable<FeaturedDealRoomDto>>(result.Data);
@@ -150,11 +167,11 @@ namespace TABP.API.Controllers
                 }
                 return Ok(roomDto);
             }
-            else 
-            { 
-                return BadRequest(result.ErrorMessage); 
+            else
+            {
+                return BadRequest(result.ErrorMessage);
             }
-            
+
         }
 
     }

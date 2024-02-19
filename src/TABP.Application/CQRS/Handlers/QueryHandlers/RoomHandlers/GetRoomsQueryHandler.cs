@@ -28,7 +28,15 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.RoomQueryHandlers
                     request.PageSize,
                     request.Page
                 );
-            return Result<IEnumerable<Room>>.Success(room);
+            if(room != null)
+            {
+                return Result<IEnumerable<Room>>.Success(room);
+            }
+            else
+            {
+                return Result<IEnumerable<Room>>.Failure("Room not found.");
+            }
+            
         }
     }
 }

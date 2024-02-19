@@ -26,9 +26,9 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                 return Result<double>.Failure("Room Not Found");
             }
 
-            var date = await _bookingRepository.GetLatestEndDate(request.RoomId, request.StartDate);
+            var isRoomAvailable = await _bookingRepository.IsRoomAvailable(request.RoomId, request.StartDate, request.EndDate);
 
-            if (date != null)
+            if (!isRoomAvailable)
             {
                 return Result<double>.Failure("The room in not available.");
             }

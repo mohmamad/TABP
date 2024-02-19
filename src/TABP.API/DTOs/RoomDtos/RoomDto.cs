@@ -1,4 +1,6 @@
-﻿namespace TABP.API.DTOs.RoomDtos
+﻿using Microsoft.AspNetCore.Routing.Constraints;
+
+namespace TABP.API.DTOs.RoomDtos
 {
     public class RoomDto
     {
@@ -6,6 +8,7 @@
         public Guid HotelId { get; set; }
         public int RoomNumber { get; set; }
         public double Price { get; set; }
+        public double Discount { get; set; }
         public int Capacity { get; set; }
         public string BookingURL { get; set; }
         public string HotelURL { get; set; }
