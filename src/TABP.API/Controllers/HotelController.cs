@@ -55,7 +55,7 @@ namespace TABP.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FoundHotelDto>>> GetHotel
+        public async Task<ActionResult<IEnumerable<HotelDto>>> GetHotel
             (
                 [FromQuery] Guid? hotelId,
                 [FromQuery] string? hotelName,

@@ -9,9 +9,8 @@ namespace TABP.API.Profiles.RoomProfile
         public RoomProfile()
         {
             CreateMap<Room, RoomDto>()
-                .ForMember(dest => dest.BookingURL, opt => opt.MapFrom<BookingURLResolver>())
-                .ForMember(dest => dest.HotelURL, opt => opt.MapFrom<HotelURLResolver>())
-                .ForMember(dest => dest.RoomTypeURL, opt => opt.MapFrom<RoomTypeURLResolver>());
+                .ForMember(dest => dest.Links, opt => opt.MapFrom<RoomURLResolver>());
+
             CreateMap<RoomType, RoomTypeDto>();
             CreateMap<Room, UpdateRoomDto>();
             CreateMap<UpdateRoomDto, Room>();

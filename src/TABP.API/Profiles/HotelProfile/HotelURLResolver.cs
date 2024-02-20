@@ -16,7 +16,7 @@ namespace TABP.API.Profiles
             new Link { Rel = "location", Href = $"/api/hotel/{source.HotelId}/location", Method = "GET" },
             new Link { Rel = "hotel images", Href = $"/api/hotel/hotelImage/{source.HotelId}", Method = "GET" },
             new Link { Rel = "booking", Href = $"", Method = "GET" }
-        };
+            };
 
             return links;
         }
