@@ -6,6 +6,6 @@
         public string StreetName { get; set; }
         public string PostalCode { get; set; }
         public Guid CityId { get; set; }
-        public string CityURL { get; set; }
+        public List<Link> Links { get; set; }
     }
 }
