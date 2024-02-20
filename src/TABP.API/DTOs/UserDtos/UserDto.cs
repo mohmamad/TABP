@@ -10,6 +10,6 @@ namespace TABP.API.DTOs.UserDtos
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
         public UserLevel UserLevel { get; set; }
-        public string BookingUrl { get; set; }
+        public List<Link> Links { get; set; }
     }
 }
