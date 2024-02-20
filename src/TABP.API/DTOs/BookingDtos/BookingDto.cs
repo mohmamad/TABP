@@ -7,7 +7,6 @@
         public Guid RoomId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string RoomURL { get; set; }
-        public string UserURL { get; set; }
+        public List<Link> Links { get; set; }  
     }
 }

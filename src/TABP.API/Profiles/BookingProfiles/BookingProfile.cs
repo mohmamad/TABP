@@ -9,8 +9,7 @@ namespace TABP.API.Profiles.BookingProfiles
         public BookingProfile()
         {
             CreateMap<Booking, BookingDto>()
-                .ForMember(dest => dest.RoomURL, opt => opt.MapFrom<RoomURLResolver>())
-                .ForMember(dest => dest.UserURL, opt => opt.MapFrom<UserURLResolver>());
+                .ForMember(dest => dest.Links, opt => opt.MapFrom<BookingURLResolver>());
         }
     }
 }
