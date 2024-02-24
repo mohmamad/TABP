@@ -7,7 +7,6 @@
         public int RoomNumber { get; set; }
         public int Capacity { get; set; }
         public double Price { get; set; }
-        public double DiscountPrice { get; set; }
         public double Discount { get; set;}
     }
 }

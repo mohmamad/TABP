@@ -165,7 +165,6 @@ namespace TABP.API.Controllers
                     var featuredDeal = await _mediator.Send(new GetFeaturedDealsQuery { RoomId = room.RoomId });
                     if (featuredDeal.IsSuccess)
                     {
-                        room.DiscountPrice = (1 - featuredDeal.Data.ToList()[0].Discount) * room.Price;
                         room.Discount = featuredDeal.Data.ToList()[0].Discount;
                     }
                 }

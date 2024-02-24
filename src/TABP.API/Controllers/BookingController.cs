@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TABP.API.DTOs;
 using TABP.API.DTOs.BookingDtos;
 using TABP.Application.CQRS.Commands.BookingCommands;
 using TABP.Application.CQRS.Queries.BookingQueries;
@@ -44,14 +45,17 @@ namespace TABP.API.Controllers
                     });
                 if (result.IsSuccess)
                 {
-                    var dtoToReturn = new PaymentDto
+                    var dtoToReturn = _mapper.Map<PaymentDto>(addBookingDto);
+
+                    dtoToReturn.Price = result.Data["price"];
+                    dtoToReturn.Discount = result.Data["discount"];
+
+                    dtoToReturn.Links.Add(new Link
                     {
-                        StartDate = addBookingDto.StartDate,
-                        EndDate = addBookingDto.EndDate,
-                        Price = result.Data,
-                        PaymentURL = $"/api/booking/payment?userId={userId}&roomId={addBookingDto.RoomId}&startDate={addBookingDto.StartDate}&endDate={addBookingDto.EndDate}",
-                        RoomURL = $"/api/room?roomId={addBookingDto.RoomId}"
-                    };
+                      Rel = "payment", 
+                      Href = $"/api/booking/payment?userId={userId}&roomId={addBookingDto.RoomId}&startDate={addBookingDto.StartDate}&endDate={addBookingDto.EndDate}",
+                      Method = "POST" 
+                    });
                     return Ok(dtoToReturn);
                 }
                 else

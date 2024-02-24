@@ -11,7 +11,7 @@ namespace TABP.Application.Profiles
         {
             var links = new List<Link>
             {
-            new Link { Rel = "booking", Href = $"", Method = "GET" }
+            new Link { Rel = "booking", Href = $"/api/booking?userId={source.UserId}", Method = "GET" }
             };
 
             return links;

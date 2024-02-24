@@ -13,7 +13,7 @@ namespace TABP.API.Profiles.RoomProfile
             {
             new Link { Rel = "room type", Href = $"/api/room/roomType/{source.RoomTypeId}", Method = "GET" },
             new Link { Rel = "hotel", Href = $"/api/hotel?hotelId={source.HotelId}", Method = "GET" },
-            new Link { Rel = "booking", Href = $"", Method = "GET" }
+            new Link { Rel = "booking", Href = $"/api/booking?roomId={source.RoomId}", Method = "GET" }
             };
 
             return links;
