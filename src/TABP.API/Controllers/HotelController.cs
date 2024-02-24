@@ -93,16 +93,34 @@ namespace TABP.API.Controllers
             if (result.IsSuccess)
             {
                 var hotelDto = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
-                foreach (var hotel in hotelDto)
+                if (startDate != null && endDate != null)
                 {
-                    hotel.Links.Add(new DTOs.Link 
+                    foreach (var hotel in hotelDto)
                     {
-                        Rel = "rooms",
-                        Href = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}&startDate={startDate}&endDare={endDate}",
-                        Method = "Get"
-                    }); 
+                        hotel.Links.Add(new DTOs.Link
+                        {
+                            Rel = "rooms",
+                            Href = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}&startDate={startDate}&endDare={endDate}",
+                            Method = "Get"
+                        });
 
+                    }
                 }
+                else
+                {
+                    foreach (var hotel in hotelDto)
+                    {
+                        hotel.Links.Add(new DTOs.Link
+                        {
+                            Rel = "rooms",
+                            Href = $"/api/room?hotelId={hotel.HotelId}&minPrice={minPrice}&maxPrice={maxPrice}",
+                            Method = "Get"
+                        });
+
+                    }
+                }
+
+
                 return Ok(hotelDto);
             }
             else
@@ -217,12 +235,12 @@ namespace TABP.API.Controllers
             {
                 return BadRequest(result.ErrorMessage);
             }
-            
+
         }
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IEnumerable<HotelDto>>> GetLastVistedHotelForUser(Guid userId)
         {
-            var result = await _mediator.Send(new GetLatestVisitedHotelsForUserQuery { UserId = userId});
+            var result = await _mediator.Send(new GetLatestVisitedHotelsForUserQuery { UserId = userId });
             if (result.IsSuccess)
             {
                 var dtoToReturn = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
@@ -232,7 +250,7 @@ namespace TABP.API.Controllers
             {
                 return BadRequest(result.ErrorMessage);
             }
-            
+
         }
 
     }

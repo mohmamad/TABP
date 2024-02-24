@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using TABP.API.DTOs.FeaturedDealsDtos;
 using TABP.API.DTOs.HotelDtos;
+using TABP.API.Profiles.FeaturedDealsProfile;
 using TABP.Domain.Entities;
 
 namespace TABP.API.Profiles
@@ -15,6 +17,8 @@ namespace TABP.API.Profiles
             CreateMap<UpdateHotelDto, Hotel>();
             CreateMap<HotelType, HotelTypeDto>();
             CreateMap<HotelImage, HotelImageDto>();
+            CreateMap<Hotel, FeaturedDealHotelDto>()
+               .ForMember(dest => dest.Links, opt => opt.MapFrom<FeaturedDealRoomURLResolver>());
         }
     }
 }

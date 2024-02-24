@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
@@ -121,7 +120,7 @@ namespace TABP.Infrastructure.Repositories
         }
         public async Task<IEnumerable<Hotel>> GetHotelWithFeaturedDeals()
         {
-            var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow))).Take(5);
+            var hotels = _dbContext.Hotels.Where(h => h.Rooms.Any(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow && f.StartDate < DateTime.UtcNow))).Take(5);
             return hotels;
         }
 

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using TABP.API.CQRS.Handlers;
 using TABP.Application.CQRS.Queries.HotelQueries;
 using TABP.Domain.Entities;
@@ -16,7 +17,7 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelHandlers
         public async Task<Result<IEnumerable<Hotel>>> Handle(GetHotelsWithFeaturedDealsQuery request, CancellationToken cancellationToken)
         {
             var hotels = await _hotelRepository.GetHotelWithFeaturedDeals();
-            if(hotels != null)
+            if(!hotels.IsNullOrEmpty())
             {
                 return Result<IEnumerable<Hotel>>.Success(hotels);
             }

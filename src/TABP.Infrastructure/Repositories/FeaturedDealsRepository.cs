@@ -23,6 +23,7 @@ namespace TABP.Infrastructure.Repositories
             (
                  Guid? featuredDealId,
                  Guid? roomId,
+                 Guid? hotelId,
                  string? description,
                  double? discount,
                  DateTime? startDate,
@@ -40,6 +41,10 @@ namespace TABP.Infrastructure.Repositories
             if (roomId != null)
             {
                 featuredDealQuery = featuredDealQuery.Where(f => f.RoomId == roomId && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow);
+            }
+            if (hotelId != null)
+            {
+                featuredDealQuery = featuredDealQuery.Where(f => f.RoomId == roomId && f.StartDate <= DateTime.UtcNow && f.EndDate >= DateTime.UtcNow && f.Room.Hotel.HotelId == hotelId);
             }
             if (description != null)
             {

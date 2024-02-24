@@ -7,6 +7,6 @@
         public string HotelDescription { get; set; }
         public double Rating { get; set; }
         public string Amenities { get; set; }
-        public string RoomsURL { get; set; }
+        public List<Link> Links { get; set; }
     }
 }
