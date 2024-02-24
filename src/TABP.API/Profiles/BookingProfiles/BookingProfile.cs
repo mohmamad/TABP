@@ -10,6 +10,9 @@ namespace TABP.API.Profiles.BookingProfiles
         {
             CreateMap<Booking, BookingDto>()
                 .ForMember(dest => dest.Links, opt => opt.MapFrom<BookingURLResolver>());
+
+            CreateMap<AddBookingDto, PaymentDto>()
+                .ForMember(dest => dest.Links, opt => opt.MapFrom<PaymentDtoURLResolver>());
         }
     }
 }

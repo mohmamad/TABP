@@ -24,7 +24,7 @@ namespace TABP.API.Controllers
 
         [HttpPost("{hotelId}/location")]
         [Authorize]
-        public async Task<ActionResult<AddLocationDto>> Upload([FromForm] AddLocationDto imageFile, Guid hotelId)
+        public async Task<ActionResult<AddLocationDto>> AddLocation([FromForm] AddLocationDto imageFile, Guid hotelId)
         {
             var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
 

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TABP.API", "TABP.API\TABP.API.csproj", "{FAE67DFA-A09F-4712-B589-B1297DAF57D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TABP.API", "TABP.API\TABP.API.csproj", "{FAE67DFA-A09F-4712-B589-B1297DAF57D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TABP.Domain", "TABP.Domain\TABP.Domain.csproj", "{FCC01A32-4222-463F-A64D-C63EFE584EE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TABP.Domain", "TABP.Domain\TABP.Domain.csproj", "{FCC01A32-4222-463F-A64D-C63EFE584EE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TABP.Infrastructure", "TABP.Infrastructure\TABP.Infrastructure.csproj", "{3D6FCA19-9A68-4D41-8BF0-926A81633186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TABP.Infrastructure", "TABP.Infrastructure\TABP.Infrastructure.csproj", "{3D6FCA19-9A68-4D41-8BF0-926A81633186}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TABP.Application", "TABP.Application\TABP.Application.csproj", "{579626B7-DEED-425F-9AA7-7CB1591510CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TABP.Application", "TABP.Application\TABP.Application.csproj", "{579626B7-DEED-425F-9AA7-7CB1591510CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

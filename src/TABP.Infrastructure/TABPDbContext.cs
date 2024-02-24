@@ -35,8 +35,6 @@ namespace TABP.Infrastructure
                 .HasForeignKey(h => h.HotelTypeId)
                 .IsRequired(false);
 
-
-
             modelBuilder.Entity<FeaturedDeal>()
         .HasOne(p => p.Room)
         .WithMany(c => c.FeaturedDeals)

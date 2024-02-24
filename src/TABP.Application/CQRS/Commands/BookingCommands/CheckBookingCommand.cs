@@ -4,7 +4,7 @@ using TABP.Domain.Entities;
 
 namespace TABP.Application.CQRS.Commands.BookingCommands
 {
-    public class CheckBookingCommand : IRequest<Result<double>>
+    public class CheckBookingCommand : IRequest<Result<Dictionary<string, double>>>
     {
         public Guid UserId { get; set; }
         public Guid RoomId { get; set; }
