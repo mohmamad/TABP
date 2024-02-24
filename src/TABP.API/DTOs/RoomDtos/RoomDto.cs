@@ -10,8 +10,6 @@ namespace TABP.API.DTOs.RoomDtos
         public double Price { get; set; }
         public double Discount { get; set; }
         public int Capacity { get; set; }
-        public string BookingURL { get; set; }
-        public string HotelURL { get; set; }
-        public string RoomTypeURL { get; set; }
+        public List<Link> Links { get; set; }
     }
 }

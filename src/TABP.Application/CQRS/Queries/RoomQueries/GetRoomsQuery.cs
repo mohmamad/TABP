@@ -14,6 +14,8 @@ namespace TABP.Application.CQRS.Queries.RoomQueries
         public int? Capacity;
         public double? MaxPrice;
         public double? MinPrice;
+        public DateTime? StartDate;
+        public DateTime? EndDate;
         public int PageSize;
         public int Page;
     }

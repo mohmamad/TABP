@@ -11,7 +11,7 @@ namespace TABP.API.Profiles
         {
             CreateMap<CreateUserDto, User>();
             CreateMap<User, UserDto>()
-               .ForMember(dest => dest.BookingUrl, opt => opt.MapFrom<UserURLResolver>());
+               .ForMember(dest => dest.Links, opt => opt.MapFrom<UserURLResolver>());
         }
     }
 }

@@ -1,14 +1,20 @@
 ﻿using AutoMapper;
+using TABP.API.DTOs;
 using TABP.API.DTOs.UserDtos;
 using TABP.Domain.Entities;
 
 namespace TABP.Application.Profiles
 {
-    public class UserURLResolver : IValueResolver<User, UserDto, string>
+    public class UserURLResolver : IValueResolver<User, UserDto, List<Link>>
     {
-        public string Resolve(User source, UserDto destination, string destMember, ResolutionContext context)
+        public List<Link> Resolve(User source, UserDto destination, List<Link> destMember, ResolutionContext context)
         {
-            return $""; // TODO add here the link to the user Booking
+            var links = new List<Link>
+            {
+            new Link { Rel = "booking", Href = $"", Method = "GET" }
+            };
+
+            return links;
         }
     }
 }

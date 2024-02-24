@@ -9,7 +9,7 @@ namespace TABP.API.Profiles
         public LocationProfile() 
         {
             CreateMap<Location, LocationDto>()
-              .ForMember(dest => dest.CityURL, opt => opt.MapFrom<CityUrlResolver>());
+              .ForMember(dest => dest.Links, opt => opt.MapFrom<LocationUrlResolver>());
         }
     }
 }

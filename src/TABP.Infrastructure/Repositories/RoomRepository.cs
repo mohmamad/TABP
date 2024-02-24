@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
@@ -32,13 +30,15 @@ namespace TABP.Infrastructure.Repositories
                 int? capacity,
                 double? maxPrice,
                 double? minPrice,
+                DateTime? startDate,
+                DateTime? endDate,
                 int pageSize,
                 int page
             )
         {
             IQueryable<Room> roomQuery = _dbContext.Rooms;
 
-            if(roomId != null)
+            if (roomId != null)
             {
                 roomQuery = roomQuery.Where(r => r.RoomId == roomId);
             }
@@ -69,6 +69,10 @@ namespace TABP.Infrastructure.Repositories
             if (minPrice != null)
             {
                 roomQuery = roomQuery.Where(r => r.Price >= minPrice);
+            }
+            if (startDate != null && endDate != null)
+            {
+                roomQuery = roomQuery.Where(r => r.Bookings.Any(b => !(b.StartDate >= startDate && b.StartDate <= endDate || b.EndDate >= startDate && b.EndDate <= endDate)));
             }
 
             return await roomQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
