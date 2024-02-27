@@ -20,6 +20,7 @@ namespace TABP.Domain.Interfaces
                 DateTime? startDate,
                 DateTime? endDate,
                 string? city,
+                int? numberOfRooms,
                 int pageSize = 30,
                 int page = 1
            );

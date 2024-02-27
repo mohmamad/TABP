@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TABP.Domain.Entities;
-using TABP.Domain.Enums;
 
 namespace TABP.Infrastructure
 {
@@ -22,6 +21,8 @@ namespace TABP.Infrastructure
         public DbSet<RoomType> RoomTypes { get; set; }
         public DbSet<FeaturedDeal> FeaturedDeals { get; set; }
         public DbSet<HotelImage> HotelImages { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Room>()
@@ -41,29 +42,13 @@ namespace TABP.Infrastructure
         .HasForeignKey(c => c.RoomId)
         .IsRequired(false);
 
+            
 
-            SeedingUsers(modelBuilder);
             SeedingHotelType(modelBuilder);
             SeedingRoomType(modelBuilder);
         }
 
 
-        private void SeedingUsers(ModelBuilder mb)
-        {
-            mb.Entity<User>().HasData
-                (
-                new User
-                {
-                    UserId = Guid.NewGuid(),
-                    FirstName = "mohamad",
-                    LastName = "moghrabi",
-                    Email = "mohamad.moghrabi@gmail.com",
-                    Password = "1234",
-                    BirthDate = DateTime.Now,
-                    UserLevel = UserLevel.Admin,
-                }
-                );
-        }
 
         private void SeedingHotelType(ModelBuilder mb)
         {

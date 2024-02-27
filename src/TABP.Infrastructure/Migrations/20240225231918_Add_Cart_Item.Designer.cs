@@ -12,8 +12,8 @@ using TABP.Infrastructure;
 namespace TABP.Infrastructure.Migrations
 {
     [DbContext(typeof(TABPDbContext))]
-    [Migration("20240216214447_fix_relation_between_location_and_city")]
-    partial class fix_relation_between_location_and_city
+    [Migration("20240225231918_Add_Cart_Item")]
+    partial class Add_Cart_Item
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace TABP.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CartItemRoom", b =>
+                {
+                    b.Property<Guid>("CartItemsCartItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoomsRoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CartItemsCartItemId", "RoomsRoomId");
+
+                    b.HasIndex("RoomsRoomId");
+
+                    b.ToTable("CartItemRoom");
+                });
 
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
                 {
@@ -50,6 +65,34 @@ namespace TABP.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.CartItem", b =>
+                {
+                    b.Property<Guid>("CartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RoomStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CartItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.City", b =>
@@ -176,12 +219,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            HotelTypeId = new Guid("17dec853-2fd8-4b7b-a41e-67d250dd313c"),
+                            HotelTypeId = new Guid("3af93eab-d9c5-4115-9085-cf548b896543"),
                             Type = "perfect"
                         },
                         new
                         {
-                            HotelTypeId = new Guid("0c1318a9-804c-4ccd-a894-cfd2b255ae34"),
+                            HotelTypeId = new Guid("0cd6d7e6-fefd-441a-a77d-a8df017f8561"),
                             Type = "nice"
                         });
                 });
@@ -297,12 +340,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoomTypeId = new Guid("7828f8e5-28b4-4a5f-b06a-cdcf687e9e2a"),
+                            RoomTypeId = new Guid("c4e22308-aa72-4f7e-a867-aeb7fa632cdb"),
                             Type = "perfect"
                         },
                         new
                         {
-                            RoomTypeId = new Guid("f90796ee-836b-4515-8093-e8aa6cd3019d"),
+                            RoomTypeId = new Guid("d7282ffa-d9c9-4ce3-a11c-e030204edc3a"),
                             Type = "nice"
                         });
                 });
@@ -338,18 +381,21 @@ namespace TABP.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("a24bda68-3b47-4bef-9cc1-be3475def205"),
-                            BirthDate = new DateTime(2024, 2, 16, 23, 44, 47, 727, DateTimeKind.Local).AddTicks(8329),
-                            Email = "mohamad.moghrabi@gmail.com",
-                            FirstName = "mohamad",
-                            LastName = "moghrabi",
-                            Password = "1234",
-                            UserLevel = 2
-                        });
+            modelBuilder.Entity("CartItemRoom", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.CartItem", null)
+                        .WithMany()
+                        .HasForeignKey("CartItemsCartItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TABP.Domain.Entities.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomsRoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
@@ -367,6 +413,17 @@ namespace TABP.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.CartItem", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.User", "User")
+                        .WithMany("CartItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -493,6 +550,8 @@ namespace TABP.Infrastructure.Migrations
 
             modelBuilder.Entity("TABP.Domain.Entities.User", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("bookings");

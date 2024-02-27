@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TABP.API.DTOs.BookingDtos;
+using TABP.API.DTOs.CardItemDtos;
 using TABP.Domain.Entities;
 
 namespace TABP.API.Profiles.BookingProfiles
@@ -10,9 +11,6 @@ namespace TABP.API.Profiles.BookingProfiles
         {
             CreateMap<Booking, BookingDto>()
                 .ForMember(dest => dest.Links, opt => opt.MapFrom<BookingURLResolver>());
-
-            CreateMap<AddBookingDto, PaymentDto>()
-                .ForMember(dest => dest.Links, opt => opt.MapFrom<PaymentDtoURLResolver>());
         }
     }
 }

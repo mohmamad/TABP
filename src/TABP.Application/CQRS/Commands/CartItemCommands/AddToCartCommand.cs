@@ -2,9 +2,9 @@
 using TABP.API.CQRS.Handlers;
 using TABP.Domain.Entities;
 
-namespace TABP.Application.CQRS.Commands.BookingCommands
+namespace TABP.Application.CQRS.Commands.CartItemCommands
 {
-    public class CheckBookingCommand : IRequest<Result<Dictionary<string, double>>>
+    public class AddToCartCommand : IRequest<Result<Dictionary<string, double>>>
     {
         public Guid UserId { get; set; }
         public Guid RoomId { get; set; }

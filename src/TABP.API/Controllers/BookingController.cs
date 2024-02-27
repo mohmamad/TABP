@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TABP.API.DTOs;
 using TABP.API.DTOs.BookingDtos;
 using TABP.Application.CQRS.Commands.BookingCommands;
 using TABP.Application.CQRS.Queries.BookingQueries;
@@ -19,8 +18,8 @@ namespace TABP.API.Controllers
             _mapper = mapper;
             _mediator = mediator;
         }
-        [HttpPost("{userId}")]
-        public async Task<ActionResult<PaymentDto>> Book(AddBookingDto addBookingDto, Guid userId)
+        [HttpPost("user/{userId}/cart")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> bookFromCart(Guid userId)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type.EndsWith("nameidentifier"));
             var userIdFromToken = new Guid();
@@ -32,75 +31,61 @@ namespace TABP.API.Controllers
             {
                 return Unauthorized();
             }
-            if(userIdFromToken == userId)
+            if (userIdFromToken == userId)
             {
-               var result = await _mediator.Send(
-                    new CheckBookingCommand
-                    {
-                        UserId = userId,
-                        RoomId = addBookingDto.RoomId,
-                        StartDate = addBookingDto.StartDate,
-                        EndDate = addBookingDto.EndDate,
-                        NumberOfResidents = addBookingDto.NumberOfResidents
-                    });
+                var result = await _mediator.Send(new AddBookingFromCartCommand
+                {
+                    UserId = userId,
+                });
+
                 if (result.IsSuccess)
                 {
-                    var dtoToReturn = _mapper.Map<PaymentDto>(addBookingDto);
-
-                    dtoToReturn.Price = result.Data["price"];
-                    dtoToReturn.Discount = result.Data["discount"];
-
-                    dtoToReturn.Links.Add(new Link
-                    {
-                      Rel = "payment", 
-                      Href = $"/api/booking/payment?userId={userId}&roomId={addBookingDto.RoomId}&startDate={addBookingDto.StartDate}&endDate={addBookingDto.EndDate}",
-                      Method = "POST" 
-                    });
+                    var dtoToReturn = _mapper.Map<IEnumerable<BookingDto>>(result.Data);
                     return Ok(dtoToReturn);
                 }
                 else
                 {
                     return BadRequest(result.ErrorMessage);
                 }
-                
+
             }
             else
             {
-                return BadRequest();
+                return Unauthorized();
             }
-            
+
         }
 
-        [HttpPost("payment")]
-        public async Task<ActionResult<PaymentDto>> AddPayment
-            (
-            AddPaymentDto addPaymentDto,
-            [FromQuery] Guid userId,
-            [FromQuery] Guid roomId,
-            [FromQuery] DateTime startDate,
-            [FromQuery] DateTime endDate
-            )
-        {
-            
-            var result = await _mediator.Send(
-                    new AddBookingCommand
-                    {
-                        UserId = userId,
-                        RoomId = roomId,
-                        priceToPay = addPaymentDto.Price,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    });
-            if (result.IsSuccess)
-            {
-                var dtoToReturn = _mapper.Map<BookingDto>(result.Data);
-                return Ok(dtoToReturn);
-            }
-            else
-            {
-                return BadRequest(result.ErrorMessage);
-            }
-        }
+        //[HttpPost("payment")]
+        //public async Task<ActionResult<ConfirmBookingDto>> AddPayment
+        //    (
+        //    AddPaymentDto addPaymentDto,
+        //    [FromQuery] Guid userId,
+        //    [FromQuery] Guid roomId,
+        //    [FromQuery] DateTime startDate,
+        //    [FromQuery] DateTime endDate
+        //    )
+        //{
+
+        //    var result = await _mediator.Send(
+        //            new AddBookingCommand
+        //            {
+        //                UserId = userId,
+        //                RoomId = roomId,
+        //                priceToPay = addPaymentDto.Price,
+        //                StartDate = startDate,
+        //                EndDate = endDate
+        //            });
+        //    if (result.IsSuccess)
+        //    {
+        //        var dtoToReturn = _mapper.Map<BookingDto>(result.Data);
+        //        return Ok(dtoToReturn);
+        //    }
+        //    else
+        //    {
+        //        return BadRequest(result.ErrorMessage);
+        //    }
+        //}
 
         [HttpGet]
         public async Task<ActionResult<BookingDto>> GetBooking
@@ -136,7 +121,7 @@ namespace TABP.API.Controllers
             {
                 return BadRequest(result.ErrorMessage);
             }
-            
+
         }
 
     }

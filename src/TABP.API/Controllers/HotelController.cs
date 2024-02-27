@@ -69,6 +69,7 @@ namespace TABP.API.Controllers
                 [FromQuery] DateTime? startDate,
                 [FromQuery] DateTime? endDate,
                 [FromQuery] string? city,
+                [FromQuery] int? numberOfRooms,
                 [FromQuery] int pageSize = 30,
                 [FromQuery] int page = 1
             )
@@ -87,6 +88,7 @@ namespace TABP.API.Controllers
                 StartDate = startDate,
                 EndDate = endDate,
                 City = city,
+                NumberOfRooms = numberOfRooms,
                 PageSize = pageSize,
                 Page = page
             });

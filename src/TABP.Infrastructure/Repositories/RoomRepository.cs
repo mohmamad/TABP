@@ -87,7 +87,8 @@ namespace TABP.Infrastructure.Repositories
 
         public async Task<Room> GetRoomByIdAsync(Guid roomId)
         {
-            return await _dbContext.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
+            var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
+            return room;
         }
 
         public async Task<RoomType> GetRoomTypeByRoomIdAsync(Guid roomTypeId)

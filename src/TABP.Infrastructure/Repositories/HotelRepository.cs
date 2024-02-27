@@ -43,6 +43,7 @@ namespace TABP.Infrastructure.Repositories
                  DateTime? startDate,
                  DateTime? endDate,
                  string? city,
+                 int? numberOfRooms,
                  int pageSize,
                  int page
             )
@@ -93,7 +94,10 @@ namespace TABP.Infrastructure.Repositories
             {
                 hotelQuery = hotelQuery.Where(h => h.Location.City.CityName == city);
             }
-
+            if (numberOfRooms != null)
+            {
+                hotelQuery = hotelQuery.Where(h => h.Rooms.Count() >= numberOfRooms);
+            }
             return await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
