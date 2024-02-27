@@ -111,6 +111,48 @@ namespace TABP.API.Controllers
             }
         }
 
+        [HttpDelete("{cartItemId}")]
+        public async Task<ActionResult> DeleteCartItem(Guid cartItemId, Guid userId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type.EndsWith("nameidentifier"));
+            var userIdFromToken = new Guid();
+            if (userIdClaim != null)
+            {
+                userIdFromToken = Guid.Parse(userIdClaim.Value);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+            if (userIdFromToken == userId)
+            {
+                var result = await _mediator.Send(new DeleteCartItemCommand
+                {
+                    CartItemdId = cartItemId,
+                    UserId = userId
+                });
+
+                if (result.IsSuccess)
+                {
+
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest(result.ErrorMessage);
+                }
+
+
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+
+        }
+
 
     }
 }
