@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TABP.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class fix_relation_between_location_and_city : Migration
+    public partial class Add_Cart_Item : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,6 +88,28 @@ namespace TABP.Infrastructure.Migrations
                         column: x => x.HotelTypeId,
                         principalTable: "HotelTypes",
                         principalColumn: "HotelTypeId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    CartItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RoomStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.CartItemId);
+                    table.ForeignKey(
+                        name: "FK_CartItems_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,6 +242,30 @@ namespace TABP.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartItemRoom",
+                columns: table => new
+                {
+                    CartItemsCartItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoomsRoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItemRoom", x => new { x.CartItemsCartItemId, x.RoomsRoomId });
+                    table.ForeignKey(
+                        name: "FK_CartItemRoom_CartItems_CartItemsCartItemId",
+                        column: x => x.CartItemsCartItemId,
+                        principalTable: "CartItems",
+                        principalColumn: "CartItemId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CartItemRoom_Rooms_RoomsRoomId",
+                        column: x => x.RoomsRoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "RoomId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FeaturedDeals",
                 columns: table => new
                 {
@@ -245,8 +291,8 @@ namespace TABP.Infrastructure.Migrations
                 columns: new[] { "HotelTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("0c1318a9-804c-4ccd-a894-cfd2b255ae34"), "nice" },
-                    { new Guid("17dec853-2fd8-4b7b-a41e-67d250dd313c"), "perfect" }
+                    { new Guid("0cd6d7e6-fefd-441a-a77d-a8df017f8561"), "nice" },
+                    { new Guid("3af93eab-d9c5-4115-9085-cf548b896543"), "perfect" }
                 });
 
             migrationBuilder.InsertData(
@@ -254,14 +300,9 @@ namespace TABP.Infrastructure.Migrations
                 columns: new[] { "RoomTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("7828f8e5-28b4-4a5f-b06a-cdcf687e9e2a"), "perfect" },
-                    { new Guid("f90796ee-836b-4515-8093-e8aa6cd3019d"), "nice" }
+                    { new Guid("c4e22308-aa72-4f7e-a867-aeb7fa632cdb"), "perfect" },
+                    { new Guid("d7282ffa-d9c9-4ce3-a11c-e030204edc3a"), "nice" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "UserId", "BirthDate", "Email", "FirstName", "LastName", "Password", "UserLevel" },
-                values: new object[] { new Guid("a24bda68-3b47-4bef-9cc1-be3475def205"), new DateTime(2024, 2, 16, 23, 44, 47, 727, DateTimeKind.Local).AddTicks(8329), "mohamad.moghrabi@gmail.com", "mohamad", "moghrabi", "1234", 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RoomId",
@@ -271,6 +312,16 @@ namespace TABP.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",
                 table: "Bookings",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItemRoom_RoomsRoomId",
+                table: "CartItemRoom",
+                column: "RoomsRoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_UserId",
+                table: "CartItems",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -327,6 +378,9 @@ namespace TABP.Infrastructure.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
+                name: "CartItemRoom");
+
+            migrationBuilder.DropTable(
                 name: "FeaturedDeals");
 
             migrationBuilder.DropTable(
@@ -337,6 +391,9 @@ namespace TABP.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
