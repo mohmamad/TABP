@@ -21,11 +21,11 @@ namespace TABP.Infrastructure.Repositories
 
         public async Task<bool> IsRoomAvailable(Guid roomId, DateTime startDate, DateTime endDate)
         {
-            var overlappingBookings = _dbContext.Bookings
+            var overlappingBookings = await _dbContext.Bookings
                 .Where(b => b.RoomId == roomId &&
                             ((b.StartDate >= startDate && b.StartDate <= endDate) ||
                              (b.EndDate >= startDate && b.EndDate <= endDate)))
-                .ToList();
+                .ToListAsync();
 
             
             return !overlappingBookings.Any();

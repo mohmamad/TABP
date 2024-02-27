@@ -37,6 +37,7 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelQueryHandlers
                     request.StartDate,
                     request.EndDate,
                     request.City,
+                    request.NumberOfRooms,
                     request.PageSize,
                     request.Page
                 );

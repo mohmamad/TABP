@@ -18,6 +18,7 @@ namespace TABP.Application.CQRS.Queries.HotelQueries
         public DateTime? StartDate;
         public DateTime? EndDate;
         public string? City;
+        public int? NumberOfRooms;
         public int PageSize;
         public int Page;
     }
