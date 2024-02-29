@@ -10,7 +10,7 @@ namespace TABP.Application.CQRS.Queries.HotelQueries
         public string? HotelName;
         public string? HotelDescription;
         public double? Rating;
-        public string? Amenities;
+        public string? Amenity;
         public Guid? HotelTypeId;
         public string? HotelType;
         public double? MinPrice;

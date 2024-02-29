@@ -58,6 +58,7 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IFeaturedDealsRepository, FeaturedDealsRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
 
 

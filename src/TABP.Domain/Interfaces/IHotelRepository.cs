@@ -12,7 +12,7 @@ namespace TABP.Domain.Interfaces
                 string? hotelName,
                 string? hotelDescription,
                 double? rating,
-                string? amenities,
+                string? amenity,
                 Guid? hotelTypeId,
                 string? hotelType,
                 double? minPrice,

@@ -22,6 +22,7 @@ namespace TABP.Infrastructure
         public DbSet<FeaturedDeal> FeaturedDeals { get; set; }
         public DbSet<HotelImage> HotelImages { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Amenity> Amenities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TABP.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_Cart_Item : Migration
+    public partial class add_amenities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -77,7 +77,6 @@ namespace TABP.Infrastructure.Migrations
                     HotelName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HotelDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rating = table.Column<double>(type: "float", nullable: false),
-                    Amenities = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HotelTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -109,6 +108,26 @@ namespace TABP.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Amenities",
+                columns: table => new
+                {
+                    AmenityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HotelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Amenities", x => x.AmenityId);
+                    table.ForeignKey(
+                        name: "FK_Amenities_Hotels_HotelId",
+                        column: x => x.HotelId,
+                        principalTable: "Hotels",
+                        principalColumn: "HotelId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -291,8 +310,8 @@ namespace TABP.Infrastructure.Migrations
                 columns: new[] { "HotelTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("0cd6d7e6-fefd-441a-a77d-a8df017f8561"), "nice" },
-                    { new Guid("3af93eab-d9c5-4115-9085-cf548b896543"), "perfect" }
+                    { new Guid("03bfa6a3-5271-4ac1-b6b8-e16446de8163"), "perfect" },
+                    { new Guid("73fa565e-fda1-47f8-892d-0158b7717e8f"), "nice" }
                 });
 
             migrationBuilder.InsertData(
@@ -300,9 +319,14 @@ namespace TABP.Infrastructure.Migrations
                 columns: new[] { "RoomTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("c4e22308-aa72-4f7e-a867-aeb7fa632cdb"), "perfect" },
-                    { new Guid("d7282ffa-d9c9-4ce3-a11c-e030204edc3a"), "nice" }
+                    { new Guid("902fbc41-479e-4921-b30a-369be57aea02"), "nice" },
+                    { new Guid("f5e4f671-54fd-48cb-b67f-fae0641d4eda"), "perfect" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Amenities_HotelId",
+                table: "Amenities",
+                column: "HotelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RoomId",
@@ -374,6 +398,9 @@ namespace TABP.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Amenities");
+
             migrationBuilder.DropTable(
                 name: "Bookings");
 

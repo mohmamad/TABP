@@ -25,7 +25,6 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.HotelHandlers
                     HotelName = request.HotelName,
                     HotelDescription = request.HotelDescription,
                     Rating = request.Rating,
-                    Amenities = request.Amenities,
                     HotelTypeId = result.HotelTypeId
                 };
                 await _hotelRepository.AddHotelAsync(hotel);

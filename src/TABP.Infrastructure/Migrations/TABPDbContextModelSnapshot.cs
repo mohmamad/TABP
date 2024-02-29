@@ -37,6 +37,30 @@ namespace TABP.Infrastructure.Migrations
                     b.ToTable("CartItemRoom");
                 });
 
+            modelBuilder.Entity("TABP.Domain.Entities.Amenity", b =>
+                {
+                    b.Property<Guid>("AmenityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("HotelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AmenityId");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("Amenities");
+                });
+
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
                 {
                     b.Property<Guid>("BookingId")
@@ -154,10 +178,6 @@ namespace TABP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Amenities")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("HotelDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -216,12 +236,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            HotelTypeId = new Guid("3af93eab-d9c5-4115-9085-cf548b896543"),
+                            HotelTypeId = new Guid("03bfa6a3-5271-4ac1-b6b8-e16446de8163"),
                             Type = "perfect"
                         },
                         new
                         {
-                            HotelTypeId = new Guid("0cd6d7e6-fefd-441a-a77d-a8df017f8561"),
+                            HotelTypeId = new Guid("73fa565e-fda1-47f8-892d-0158b7717e8f"),
                             Type = "nice"
                         });
                 });
@@ -337,12 +357,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoomTypeId = new Guid("c4e22308-aa72-4f7e-a867-aeb7fa632cdb"),
+                            RoomTypeId = new Guid("f5e4f671-54fd-48cb-b67f-fae0641d4eda"),
                             Type = "perfect"
                         },
                         new
                         {
-                            RoomTypeId = new Guid("d7282ffa-d9c9-4ce3-a11c-e030204edc3a"),
+                            RoomTypeId = new Guid("902fbc41-479e-4921-b30a-369be57aea02"),
                             Type = "nice"
                         });
                 });
@@ -393,6 +413,17 @@ namespace TABP.Infrastructure.Migrations
                         .HasForeignKey("RoomsRoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TABP.Domain.Entities.Amenity", b =>
+                {
+                    b.HasOne("TABP.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Amenities")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
                 });
 
             modelBuilder.Entity("TABP.Domain.Entities.Booking", b =>
@@ -518,6 +549,8 @@ namespace TABP.Infrastructure.Migrations
 
             modelBuilder.Entity("TABP.Domain.Entities.Hotel", b =>
                 {
+                    b.Navigation("Amenities");
+
                     b.Navigation("Images");
 
                     b.Navigation("Location")

@@ -35,7 +35,7 @@ namespace TABP.Infrastructure.Repositories
                  string? hotelName,
                  string? hotelDescription,
                  double? rating,
-                 string? amenities,
+                 string? amenity,
                  Guid? hotelTypeId,
                  string? hotelType,
                  double? minPrice,
@@ -48,6 +48,7 @@ namespace TABP.Infrastructure.Repositories
                  int page
             )
         {
+        
             IQueryable<Hotel> hotelQuery = _dbContext.Hotels;
 
             if (hotelId != null)
@@ -65,10 +66,6 @@ namespace TABP.Infrastructure.Repositories
             if (rating != null)
             {
                 hotelQuery = hotelQuery.Where(h => h.Rating == rating);
-            }
-            if (amenities != null)
-            {
-                hotelQuery = hotelQuery.Where(h => h.Amenities == amenities);
             }
             if (hotelTypeId != null)
             {
@@ -93,6 +90,10 @@ namespace TABP.Infrastructure.Repositories
             if (city != null)
             {
                 hotelQuery = hotelQuery.Where(h => h.Location.City.CityName == city);
+            }
+            if (amenity != null)
+            {
+                hotelQuery = hotelQuery.Where(h => h.Amenities.Any(a => a.Name == amenity));
             }
             if (numberOfRooms != null)
             {
