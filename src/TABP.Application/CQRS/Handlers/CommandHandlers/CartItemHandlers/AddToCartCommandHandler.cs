@@ -34,7 +34,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.CartItemCommandHandlers
                 return Result<Dictionary<string, double>>.Failure("The room in not available.");
             }
 
-            if (room.Capacity <= request.NumberOfResidents)
+            if (room.Capacity >= request.NumberOfResidents)
             {
                 var cartItem = new CartItem
                 {

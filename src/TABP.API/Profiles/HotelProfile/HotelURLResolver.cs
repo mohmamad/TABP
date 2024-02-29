@@ -15,7 +15,10 @@ namespace TABP.API.Profiles
             new Link { Rel = "hotel type", Href = $"/api/hotel/hotelType/{source.HotelTypeId}", Method = "GET" },
             new Link { Rel = "location", Href = $"/api/hotel/{source.HotelId}/location", Method = "GET" },
             new Link { Rel = "hotel images", Href = $"/api/hotel/hotelImage/{source.HotelId}", Method = "GET" },
-            new Link { Rel = "booking", Href = $"/api/booking?hotelId={source.HotelId}", Method = "GET" }
+            new Link { Rel = "booking", Href = $"/api/hotel/{source.HotelId}/location", Method = "GET" },
+            new Link { Rel = "add location", Href = $"/api/hotel/{source.HotelId}/location", Method = "POST" },
+            new Link { Rel = "amenities", Href = $"", Method = "GET" },
+            new Link { Rel = "add amenities", Href = $"", Method = "POST" }
             };
 
             return links;

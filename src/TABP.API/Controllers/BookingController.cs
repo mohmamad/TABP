@@ -18,6 +18,7 @@ namespace TABP.API.Controllers
             _mapper = mapper;
             _mediator = mediator;
         }
+
         [HttpPost("user/{userId}/cart")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> bookFromCart(Guid userId)
         {
@@ -55,37 +56,6 @@ namespace TABP.API.Controllers
             }
 
         }
-
-        //[HttpPost("payment")]
-        //public async Task<ActionResult<ConfirmBookingDto>> AddPayment
-        //    (
-        //    AddPaymentDto addPaymentDto,
-        //    [FromQuery] Guid userId,
-        //    [FromQuery] Guid roomId,
-        //    [FromQuery] DateTime startDate,
-        //    [FromQuery] DateTime endDate
-        //    )
-        //{
-
-        //    var result = await _mediator.Send(
-        //            new AddBookingCommand
-        //            {
-        //                UserId = userId,
-        //                RoomId = roomId,
-        //                priceToPay = addPaymentDto.Price,
-        //                StartDate = startDate,
-        //                EndDate = endDate
-        //            });
-        //    if (result.IsSuccess)
-        //    {
-        //        var dtoToReturn = _mapper.Map<BookingDto>(result.Data);
-        //        return Ok(dtoToReturn);
-        //    }
-        //    else
-        //    {
-        //        return BadRequest(result.ErrorMessage);
-        //    }
-        //}
 
         [HttpGet]
         public async Task<ActionResult<BookingDto>> GetBooking

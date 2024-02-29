@@ -29,7 +29,7 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelQueryHandlers
                     request.HotelName,
                     request.HotelDescription,
                     request.Rating,
-                    request.Amenities,
+                    request.Amenity,
                     request.HotelTypeId,
                     request.HotelType,
                     request.MinPrice,

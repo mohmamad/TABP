@@ -34,7 +34,6 @@ namespace TABP.API.Controllers
                 {
                     HotelDescription = addHotelDto.HotelDescription,
                     HotelName = addHotelDto.HotelName,
-                    Amenities = addHotelDto.Amenities,
                     Rating = addHotelDto.Rating,
                     HotelTypeId = addHotelDto.HotelTypeId
                 });
@@ -61,7 +60,7 @@ namespace TABP.API.Controllers
                 [FromQuery] string? hotelName,
                 [FromQuery] string? hotelDescription,
                 [FromQuery] double? rating,
-                [FromQuery] string? amenities,
+                [FromQuery] string? amenity,
                 [FromQuery] Guid? hotelTypeId,
                 [FromQuery] string? hotelType,
                 [FromQuery] double? minPrice,
@@ -80,7 +79,7 @@ namespace TABP.API.Controllers
                 HotelName = hotelName,
                 HotelDescription = hotelDescription,
                 Rating = rating,
-                Amenities = amenities,
+                Amenity = amenity,
                 HotelTypeId = hotelTypeId,
                 HotelType = hotelType,
                 MinPrice = minPrice,

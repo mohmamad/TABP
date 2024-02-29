@@ -10,7 +10,5 @@ namespace TABP.API.DTOs.HotelDtos
         public string HotelDescription { get; set; }
         [Required]
         public double Rating { get; set; }
-        [Required]
-        public string Amenities { get; set; }
     }
 }
