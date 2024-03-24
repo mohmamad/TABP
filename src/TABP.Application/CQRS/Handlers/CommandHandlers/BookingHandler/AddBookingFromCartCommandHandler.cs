@@ -15,6 +15,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
         private readonly IMediator _mediator;
         private readonly IRoomRepository _roomRepository;
         private readonly ICartItemRepository _cartItemRepository;
+        private readonly ITransactionService _transactionService;
         public AddBookingFromCartCommandHandler(
             IBookingRepository bookingRepository, 
             IMediator mediator, 
@@ -34,9 +35,11 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             });
             if (!cartItems.Data.IsNullOrEmpty())
             {
-                
+
                 List<Booking> bookings = new List<Booking>();
-                foreach(var cartItem in cartItems.Data)
+
+                
+                foreach (var cartItem in cartItems.Data)
                 {
                     var room = await _roomRepository.GetRoomByIdAsync(cartItem.RoomId);
 
@@ -60,15 +63,21 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                     });
                     bookings.Add(booking);
                     cartItem.RoomStatus = RoomStatus.Booked;
+
+                    var roomP = await _roomRepository.GetRoomByIdAsync(cartItem.RoomId);
+                   
                     await _cartItemRepository.SaveChangesAsync();
                 }
+                //TODO get the price of the booked rooms to send the email to the user
+
+
                 return Result<IEnumerable<Booking>>.Success(bookings);
             }
             else
             {
                 return Result<IEnumerable<Booking>>.Failure("The Cart is empty.");
             }
-            
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.BookingDtos;
+using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.BookingCommands;
 using TABP.Application.CQRS.Queries.BookingQueries;
 
@@ -85,7 +86,26 @@ namespace TABP.API.Controllers
             if (result.IsSuccess)
             {
                 var dtoToReturn = _mapper.Map<IEnumerable<BookingDto>>(result.Data);
-                return Ok(dtoToReturn);
+
+                string baseUrl = Request.Scheme + "://" + Request.Host + Request.Path;
+                string prevPageUrl = page > 1 ? $"{baseUrl}?page={page - 1}&pageSize={pageSize}" : null;
+                string nextPageUrl = $"{baseUrl}?page={page + 1}&pageSize={pageSize}";
+
+                var paginationInfo = new
+                {
+                    PrevPage = prevPageUrl,
+                    NextPage = nextPageUrl,
+                    count = dtoToReturn.Count()
+                };
+
+                var responseObj = new
+                {
+                    Pagination = paginationInfo,
+                    Bookings = dtoToReturn
+                };
+
+                return Ok(responseObj);
+
             }
             else
             {
