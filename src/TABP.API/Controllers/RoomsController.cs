@@ -98,7 +98,24 @@ namespace TABP.API.Controllers
                     room.Discount = featuredDeal.IsSuccess ? featuredDeal.Data.Discount : 0.0;
                 }
 
-                return Ok(roomDto);
+                string baseUrl = Request.Scheme + "://" + Request.Host + Request.Path;
+                string prevPageUrl = page > 1 ? $"{baseUrl}?page={page - 1}&pageSize={pageSize}" : null;
+                string nextPageUrl = $"{baseUrl}?page={page + 1}&pageSize={pageSize}";
+
+                var paginationInfo = new
+                {
+                    PrevPage = prevPageUrl,
+                    NextPage = nextPageUrl,
+                    count = roomDto.Count()
+                };
+
+                var responseObj = new
+                {
+                    Pagination = paginationInfo,
+                    Rooms = roomDto
+                };
+
+                return Ok(responseObj);
             }
             else
             {

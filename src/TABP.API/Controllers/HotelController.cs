@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.FeaturedDealsDtos;
 using TABP.API.DTOs.HotelDtos;
+using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.HotelCommands;
 using TABP.Application.CQRS.Commands.LocationCommands;
 using TABP.Application.CQRS.Queries.HotelQueries;
@@ -121,8 +122,24 @@ namespace TABP.API.Controllers
                     }
                 }
 
+                string baseUrl = Request.Scheme + "://" + Request.Host + Request.Path;
+                string prevPageUrl = page > 1 ? $"{baseUrl}?page={page - 1}&pageSize={pageSize}" : null;
+                string nextPageUrl = $"{baseUrl}?page={page + 1}&pageSize={pageSize}";
 
-                return Ok(hotelDto);
+                var paginationInfo = new
+                {
+                    PrevPage = prevPageUrl,
+                    NextPage = nextPageUrl,
+                    count = hotelDto.Count()
+                };
+
+                var responseObj = new
+                {
+                    Pagination = paginationInfo,
+                    Hotels = hotelDto
+                };
+
+                return Ok(responseObj);
             }
             else
             {
@@ -195,6 +212,7 @@ namespace TABP.API.Controllers
                     HotelImagePath = filePath.Data
                 });
                 var dtoToReturn = _mapper.Map<HotelImageDto>(result.Data);
+
                 return Ok(dtoToReturn);
             }
             else
