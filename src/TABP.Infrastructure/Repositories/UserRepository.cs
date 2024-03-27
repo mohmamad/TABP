@@ -83,9 +83,6 @@ namespace TABP.Infrastructure.Repositories
             }
         }
 
-        public async Task<User> GetUserByIdAsync(Guid userId)
-        {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId));    
-        }
+
     }
 }
