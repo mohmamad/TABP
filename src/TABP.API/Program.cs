@@ -1,10 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using sib_api_v3_sdk.Client;
 using System.Reflection;
 using System.Text;
 using TABP.API.Logging;
@@ -33,9 +31,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
     .WriteTo.File("logs/ecotrack.txt", rollingInterval: RollingInterval.Day)
-.CreateLogger();
-
-Configuration.Default.ApiKey.Add("api-key", builder.Configuration["BrevoApi:ApiKey"]);
+    .CreateLogger();
 
 
 // Add services to the container.
@@ -64,13 +60,6 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
-
-var senderEmail = builder.Configuration.GetSection("BrevoApi")["SenderEmail"];
-var senderName = builder.Configuration.GetSection("BrevoApi")["SenderName"];
-
-builder.Services.AddSingleton<IInvoiceEmailService>(new InvoiceEmailService(senderEmail, senderName));
-
-
 
 
 var basePath = builder.Configuration.GetSection("ImageStorage")["BasePath"];

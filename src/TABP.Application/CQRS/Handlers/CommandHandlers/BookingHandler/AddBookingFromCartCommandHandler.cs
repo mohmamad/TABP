@@ -6,7 +6,6 @@ using TABP.Application.CQRS.Queries.CartItemQueries;
 using TABP.Domain.Entities;
 using TABP.Domain.Enums;
 using TABP.Domain.Interfaces;
-using TABP.Infrastructure.Repositories;
 
 namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
 {
@@ -16,26 +15,17 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
         private readonly IMediator _mediator;
         private readonly IRoomRepository _roomRepository;
         private readonly ICartItemRepository _cartItemRepository;
-        private readonly IInvoiceEmailService _invoiceEmailService;
-        private readonly IUserRepository _userRepository;
-        private readonly IHotelRepository _hotelRepository;
-
+        private readonly ITransactionService _transactionService;
         public AddBookingFromCartCommandHandler(
             IBookingRepository bookingRepository, 
             IMediator mediator, 
             IRoomRepository roomRepository,
-            ICartItemRepository cartItemRepository,
-            IInvoiceEmailService invoiceEmailService,
-            IUserRepository userRepository,
-            IHotelRepository hotelRepository)
+            ICartItemRepository cartItemRepository)
         {
             _roomRepository = roomRepository;
             _bookingRepository = bookingRepository;
             _mediator = mediator;   
             _cartItemRepository = cartItemRepository;
-            _invoiceEmailService = invoiceEmailService;
-            _userRepository = userRepository;  
-            _hotelRepository = hotelRepository;
         }
         public async Task<Result<IEnumerable<Booking>>> Handle(AddBookingFromCartCommand request, CancellationToken cancellationToken)
         {
@@ -49,11 +39,6 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                 List<Booking> bookings = new List<Booking>();
 
                 
-                List<int> rooms = new List<int>();
-                List<double> pricePerDay = new List<double>();
-                List<string> hotelName = new List<string>();
-                List<int> numberOfDays = new List<int>();
-
                 foreach (var cartItem in cartItems.Data)
                 {
                     var room = await _roomRepository.GetRoomByIdAsync(cartItem.RoomId);
@@ -79,26 +64,12 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                     bookings.Add(booking);
                     cartItem.RoomStatus = RoomStatus.Booked;
 
-                    var hotel = await _hotelRepository.GetHotelById(room.HotelId);
-
-
-                    hotelName.Add(hotel.HotelName);
-                    rooms.Add(room.RoomNumber);
-                    pricePerDay.Add(room.Price);
-
-                    numberOfDays.Add((cartItem.EndDate - cartItem.StartDate).Days);
-
                     var roomP = await _roomRepository.GetRoomByIdAsync(cartItem.RoomId);
                    
                     await _cartItemRepository.SaveChangesAsync();
                 }
+                //TODO get the price of the booked rooms to send the email to the user
 
-                var user = await _userRepository.GetUserByIdAsync(cartItems.Data.ToList()[0].UserId);
-
-                string userName = user.FirstName + " " + user.LastName;
-                string userEmail = user.Email;
-
-                await _invoiceEmailService.prepareEmailMessage(userName, userEmail,pricePerDay, rooms, hotelName, numberOfDays);
 
                 return Result<IEnumerable<Booking>>.Success(bookings);
             }
