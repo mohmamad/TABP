@@ -19,6 +19,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
         private readonly IInvoiceEmailService _invoiceEmailService;
         private readonly IUserRepository _userRepository;
         private readonly IHotelRepository _hotelRepository;
+        private readonly ITransactionService _transactionService;
 
         public AddBookingFromCartCommandHandler(
             IBookingRepository bookingRepository, 
@@ -27,7 +28,8 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             ICartItemRepository cartItemRepository,
             IInvoiceEmailService invoiceEmailService,
             IUserRepository userRepository,
-            IHotelRepository hotelRepository)
+            IHotelRepository hotelRepository,
+            ITransactionService transactionService)
         {
             _roomRepository = roomRepository;
             _bookingRepository = bookingRepository;
@@ -36,6 +38,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             _invoiceEmailService = invoiceEmailService;
             _userRepository = userRepository;  
             _hotelRepository = hotelRepository;
+            _transactionService = transactionService;
         }
         public async Task<Result<IEnumerable<Booking>>> Handle(AddBookingFromCartCommand request, CancellationToken cancellationToken)
         {
@@ -53,6 +56,8 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                 List<double> pricePerDay = new List<double>();
                 List<string> hotelName = new List<string>();
                 List<int> numberOfDays = new List<int>();
+
+                await _transactionService.BeginTransaction();
 
                 foreach (var cartItem in cartItems.Data)
                 {
@@ -98,13 +103,13 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                    
                     await _cartItemRepository.SaveChangesAsync();
                 }
-
                 var user = await _userRepository.GetUserByIdAsync(cartItems.Data.ToList()[0].UserId);
 
                 string userName = user.FirstName + " " + user.LastName;
                 string userEmail = user.Email;
 
                 await _invoiceEmailService.prepareEmailMessage(userName, userEmail,pricePerDay, rooms, hotelName, numberOfDays);
+                await _transactionService.CommitTransaction();
 
                 return Result<IEnumerable<Booking>>.Success(bookings);
             }
