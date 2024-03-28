@@ -20,6 +20,13 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.CartItemCommandHandlers
         }
         public async Task<Result<Dictionary<string, double>>> Handle(AddToCartCommand request, CancellationToken cancellationToken)
         {
+            bool canAddToCart = await _cartItemRepository.CanAddToCart(request.RoomId,request.StartDate,request.EndDate);
+
+            if (!canAddToCart)
+            {
+                return Result<Dictionary<string, double>>.Failure("Item Cant Be Added.");
+            }
+
             var room = await _roomRepository.GetRoomByIdAsync(request.RoomId);
 
             if (room == null)
@@ -32,6 +39,11 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.CartItemCommandHandlers
             if (!isRoomAvailable)
             {
                 return Result<Dictionary<string, double>>.Failure("The room in not available.");
+            }
+
+            if (request.StartDate >= request.EndDate || request.StartDate < DateTime.UtcNow)
+            {
+                return Result<Dictionary<string, double>>.Failure("Invalid Date.");
             }
 
             if (room.Capacity >= request.NumberOfResidents)
