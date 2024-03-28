@@ -8,5 +8,6 @@ namespace TABP.Domain.Interfaces
         public Task<IEnumerable<CartItem>> GetCartItemsByUserIdAsync(Guid userId);
         public Task<bool> SaveChangesAsync();
         public Task<bool> DeleteCartItemAsync(Guid cartItemId, Guid userId);
+        public Task<bool> CanAddToCart(Guid roomId, DateTime startDate, DateTime endDate);
     }
 }

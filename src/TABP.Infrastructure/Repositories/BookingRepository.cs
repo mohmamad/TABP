@@ -14,10 +14,8 @@ namespace TABP.Infrastructure.Repositories
 
         public async Task<Booking> AddBooking(Booking booking)
         {
-            var transaction = _dbContext.Database.BeginTransaction();   
             await _dbContext.AddAsync(booking);
             await _dbContext.SaveChangesAsync();
-            transaction.Commit();
             return booking;
         }
 

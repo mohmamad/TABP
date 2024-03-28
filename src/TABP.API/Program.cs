@@ -60,6 +60,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 
 
 var basePath = builder.Configuration.GetSection("ImageStorage")["BasePath"];

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using TABP.API.CQRS.Handlers;
 using TABP.Application.CQRS.Commands.BookingCommands;
@@ -54,6 +54,12 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                     {
                         return Result<IEnumerable<Booking>>.Failure("The room in not available.");
                     }
+
+                    if(cartItem.StartDate >= cartItem.EndDate || cartItem.StartDate < DateTime.UtcNow)
+                    {
+                        return Result<IEnumerable<Booking>>.Failure("Invalid Date.");
+                    }
+
                     var booking = await _bookingRepository.AddBooking(new Booking
                     {
                         UserId = cartItem.UserId,
