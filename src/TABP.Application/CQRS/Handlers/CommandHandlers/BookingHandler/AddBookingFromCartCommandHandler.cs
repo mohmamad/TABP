@@ -19,6 +19,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
         private readonly IInvoiceEmailService _invoiceEmailService;
         private readonly IUserRepository _userRepository;
         private readonly IHotelRepository _hotelRepository;
+        private readonly ITransactionService _transactionService;
 
         public AddBookingFromCartCommandHandler(
             IBookingRepository bookingRepository, 
@@ -27,7 +28,8 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             ICartItemRepository cartItemRepository,
             IInvoiceEmailService invoiceEmailService,
             IUserRepository userRepository,
-            IHotelRepository hotelRepository)
+            IHotelRepository hotelRepository,
+            ITransactionService transactionService)
         {
             _roomRepository = roomRepository;
             _bookingRepository = bookingRepository;
@@ -36,6 +38,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             _invoiceEmailService = invoiceEmailService;
             _userRepository = userRepository;  
             _hotelRepository = hotelRepository;
+            _transactionService = transactionService;
         }
         public async Task<Result<IEnumerable<Booking>>> Handle(AddBookingFromCartCommand request, CancellationToken cancellationToken)
         {
@@ -54,6 +57,8 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                 List<string> hotelName = new List<string>();
                 List<int> numberOfDays = new List<int>();
 
+                await _transactionService.BeginTransaction();
+
                 foreach (var cartItem in cartItems.Data)
                 {
                     var room = await _roomRepository.GetRoomByIdAsync(cartItem.RoomId);
@@ -69,6 +74,12 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                     {
                         return Result<IEnumerable<Booking>>.Failure("The room in not available.");
                     }
+
+                    if(cartItem.StartDate >= cartItem.EndDate || cartItem.StartDate < DateTime.UtcNow)
+                    {
+                        return Result<IEnumerable<Booking>>.Failure("Invalid Date.");
+                    }
+
                     var booking = await _bookingRepository.AddBooking(new Booking
                     {
                         UserId = cartItem.UserId,
@@ -92,6 +103,8 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                    
                     await _cartItemRepository.SaveChangesAsync();
                 }
+
+                await _transactionService.CommitTransaction();
 
                 var user = await _userRepository.GetUserByIdAsync(cartItems.Data.ToList()[0].UserId);
 

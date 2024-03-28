@@ -64,6 +64,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 
 var senderEmail = builder.Configuration.GetSection("BrevoApi")["SenderEmail"];
 var senderName = builder.Configuration.GetSection("BrevoApi")["SenderName"];

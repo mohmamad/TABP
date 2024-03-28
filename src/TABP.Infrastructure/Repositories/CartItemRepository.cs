@@ -42,6 +42,25 @@ namespace TABP.Infrastructure.Repositories
             
         }
 
+        public async Task<bool> CanAddToCart(Guid roomId, DateTime startDate, DateTime endDate)
+        {
+            if(await _dbContext.CartItems.AnyAsync(c => c.RoomId == roomId 
+            && c.StartDate == startDate && c.EndDate == endDate))
+            {
+                return false;
+            }
+            else
+            {
+                var overlappingCartItems = await _dbContext.CartItems
+                .Where(c => c.RoomId == roomId &&
+                            ((c.StartDate >= startDate && c.StartDate <= endDate) ||
+                             (c.EndDate >= startDate && c.EndDate <= endDate)))
+                .ToListAsync();
+
+                return !overlappingCartItems.Any();
+            }
+        }
+
         public async Task<bool> SaveChangesAsync()
         {
             return await _dbContext.SaveChangesAsync() > 0 ;
