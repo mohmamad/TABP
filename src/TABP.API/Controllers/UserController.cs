@@ -118,6 +118,21 @@ namespace TABP.API.Controllers
 
         }
 
+        [HttpPost("ForgetPasswordDto")]
+        public async Task<ActionResult> GenerateForgetPasswordCode(ForgetPasswordDto forgetPasswordDto)
+        {
+
+            var result = await _mediator.Send(new GenerateForgetPasswordCodeCommand { Email = forgetPasswordDto.Email});
+
+            if(result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+        }
 
     }
 }

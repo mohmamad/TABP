@@ -236,12 +236,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            HotelTypeId = new Guid("5d1ec709-58b6-4ef0-8d4e-880079384059"),
+                            HotelTypeId = new Guid("d120e727-0ce8-4adf-b067-e076421f9b78"),
                             Type = "perfect"
                         },
                         new
                         {
-                            HotelTypeId = new Guid("26614205-a983-4284-ab44-4d00ffaaaa50"),
+                            HotelTypeId = new Guid("633f4581-29f6-4d08-bb3d-01a2af7780b9"),
                             Type = "nice"
                         });
                 });
@@ -278,11 +278,9 @@ namespace TABP.Infrastructure.Migrations
 
             modelBuilder.Entity("TABP.Domain.Entities.ResetPasswordCode", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -379,12 +377,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoomTypeId = new Guid("85ac6be7-ca03-4ccb-8c4c-11bcc6353e66"),
+                            RoomTypeId = new Guid("a2b5a681-11a5-493a-acff-93325f9af80f"),
                             Type = "perfect"
                         },
                         new
                         {
-                            RoomTypeId = new Guid("15c3baee-7a62-4dd0-a11b-eb079cf645d4"),
+                            RoomTypeId = new Guid("f854a505-8517-49b4-8504-8ac2e29f0cb4"),
                             Type = "nice"
                         });
                 });
