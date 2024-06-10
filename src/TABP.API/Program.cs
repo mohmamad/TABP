@@ -63,6 +63,7 @@ builder.Services.AddScoped<IFeaturedDealsRepository, FeaturedDealsRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
+builder.Services.AddScoped<IResestPasswordRepository, ResetPasswordRepository>();
 builder.Services.AddDbContext<TABPDbContext>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
@@ -70,7 +71,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 var senderEmail = builder.Configuration.GetSection("BrevoApi")["SenderEmail"];
 var senderName = builder.Configuration.GetSection("BrevoApi")["SenderName"];
 
-builder.Services.AddSingleton<IInvoiceEmailService>(new InvoiceEmailService(senderEmail, senderName));
+builder.Services.AddSingleton<IEmailService>(new EmailService(senderEmail, senderName));
 
 
 

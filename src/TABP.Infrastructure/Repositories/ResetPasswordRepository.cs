@@ -1,8 +1,11 @@
-﻿using TABP.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TABP.Domain.Entities;
+using TABP.Domain.Interfaces;
+
 
 namespace TABP.Infrastructure.Repositories
 {
-    public class ResetPasswordRepository
+    public class ResetPasswordRepository : IResestPasswordRepository
     {
         private readonly TABPDbContext _dbContext;
         public ResetPasswordRepository(TABPDbContext dbContext)
@@ -19,10 +22,20 @@ namespace TABP.Infrastructure.Repositories
             }
 
             User user = _dbContext.Users.Where(u => u.Email == email).ToList()[0];
-            ResetPasswordCode resetPasswordCode = new ResetPasswordCode { code = code, Id = new Guid(), UserId = user.UserId};
+            ResetPasswordCode resetPasswordCode = new ResetPasswordCode { Code = code, Id = new Guid(), UserId = user.UserId, CreatedDate = DateTime.Now};
             await _dbContext.ResetPasswordCodes.AddAsync(resetPasswordCode);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> IsCodeValid(string code)
+        {
+            ResetPasswordCode rcode = _dbContext.ResetPasswordCodes.Where(r => r.Code == code).ToList()[0];
+            if(rcode.CreatedDate <= DateTime.Now.AddMinutes(5))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

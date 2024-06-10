@@ -236,12 +236,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            HotelTypeId = new Guid("d120e727-0ce8-4adf-b067-e076421f9b78"),
+                            HotelTypeId = new Guid("9965e86a-41a0-4556-8ce0-9635a5bd3a59"),
                             Type = "perfect"
                         },
                         new
                         {
-                            HotelTypeId = new Guid("633f4581-29f6-4d08-bb3d-01a2af7780b9"),
+                            HotelTypeId = new Guid("18fa87d4-d102-4f5d-a95a-902f310be559"),
                             Type = "nice"
                         });
                 });
@@ -281,6 +281,9 @@ namespace TABP.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -377,12 +380,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoomTypeId = new Guid("a2b5a681-11a5-493a-acff-93325f9af80f"),
+                            RoomTypeId = new Guid("2f786c1c-b049-4095-81f2-e3bf5e12c05c"),
                             Type = "perfect"
                         },
                         new
                         {
-                            RoomTypeId = new Guid("f854a505-8517-49b4-8504-8ac2e29f0cb4"),
+                            RoomTypeId = new Guid("3263203d-e8bc-4105-a5c9-71b7371b4b53"),
                             Type = "nice"
                         });
                 });

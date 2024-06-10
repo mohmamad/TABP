@@ -134,5 +134,19 @@ namespace TABP.API.Controllers
             }
         }
 
+        [HttpPost("checkCode/{code}")]
+        public async Task<ActionResult<string>> CheckIfCodeCorrect(string code) 
+        {
+            var result = await _mediator.Send(new CheckCodeCommand { Code = code});
+
+            if(result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            
+            return BadRequest(result.ErrorMessage); 
+        }
+
+
     }
 }

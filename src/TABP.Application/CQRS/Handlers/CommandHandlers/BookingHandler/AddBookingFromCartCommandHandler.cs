@@ -16,7 +16,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
         private readonly IMediator _mediator;
         private readonly IRoomRepository _roomRepository;
         private readonly ICartItemRepository _cartItemRepository;
-        private readonly IInvoiceEmailService _invoiceEmailService;
+        private readonly IEmailService _invoiceEmailService;
         private readonly IUserRepository _userRepository;
         private readonly IHotelRepository _hotelRepository;
         private readonly ITransactionService _transactionService;
@@ -26,7 +26,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             IMediator mediator, 
             IRoomRepository roomRepository,
             ICartItemRepository cartItemRepository,
-            IInvoiceEmailService invoiceEmailService,
+            IEmailService invoiceEmailService,
             IUserRepository userRepository,
             IHotelRepository hotelRepository,
             ITransactionService transactionService)
@@ -108,7 +108,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
                 string userName = user.FirstName + " " + user.LastName;
                 string userEmail = user.Email;
 
-                await _invoiceEmailService.prepareEmailMessage(userName, userEmail,pricePerDay, rooms, hotelName, numberOfDays);
+                await _invoiceEmailService.prepareInvoiceEmailMessage(userName, userEmail,pricePerDay, rooms, hotelName, numberOfDays);
                 await _transactionService.CommitTransaction();
 
                 return Result<IEnumerable<Booking>>.Success(bookings);
