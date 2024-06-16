@@ -12,6 +12,8 @@ namespace TABP.API.Profiles
             CreateMap<CreateUserDto, User>();
             CreateMap<User, UserDto>()
                .ForMember(dest => dest.Links, opt => opt.MapFrom<UserURLResolver>());
+            CreateMap<User, UpdateUserDto>();
+            CreateMap<UpdateUserDto, User>();
         }
     }
 }
