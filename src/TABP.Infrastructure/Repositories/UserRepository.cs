@@ -87,5 +87,10 @@ namespace TABP.Infrastructure.Repositories
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId));    
         }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
     }
 }

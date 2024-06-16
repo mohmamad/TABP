@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TABP.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class add_amenities : Migration
+    public partial class Add_Created_date_To_Code : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -105,6 +105,26 @@ namespace TABP.Infrastructure.Migrations
                     table.PrimaryKey("PK_CartItems", x => x.CartItemId);
                     table.ForeignKey(
                         name: "FK_CartItems_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ResetPasswordCodes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ResetPasswordCodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ResetPasswordCodes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -310,8 +330,8 @@ namespace TABP.Infrastructure.Migrations
                 columns: new[] { "HotelTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("03bfa6a3-5271-4ac1-b6b8-e16446de8163"), "perfect" },
-                    { new Guid("73fa565e-fda1-47f8-892d-0158b7717e8f"), "nice" }
+                    { new Guid("18fa87d4-d102-4f5d-a95a-902f310be559"), "nice" },
+                    { new Guid("9965e86a-41a0-4556-8ce0-9635a5bd3a59"), "perfect" }
                 });
 
             migrationBuilder.InsertData(
@@ -319,8 +339,8 @@ namespace TABP.Infrastructure.Migrations
                 columns: new[] { "RoomTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("902fbc41-479e-4921-b30a-369be57aea02"), "nice" },
-                    { new Guid("f5e4f671-54fd-48cb-b67f-fae0641d4eda"), "perfect" }
+                    { new Guid("2f786c1c-b049-4095-81f2-e3bf5e12c05c"), "perfect" },
+                    { new Guid("3263203d-e8bc-4105-a5c9-71b7371b4b53"), "nice" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -375,6 +395,11 @@ namespace TABP.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ResetPasswordCodes_UserId",
+                table: "ResetPasswordCodes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reviews_HotelId",
                 table: "Reviews",
                 column: "HotelId");
@@ -415,6 +440,9 @@ namespace TABP.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Locations");
+
+            migrationBuilder.DropTable(
+                name: "ResetPasswordCodes");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

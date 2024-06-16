@@ -1,24 +1,44 @@
 ﻿using sib_api_v3_sdk.Api;
 using sib_api_v3_sdk.Model;
 using System.Text;
-using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
-using TABP.Infrastructure.Repositories;
 
 namespace TABP.Infrastructure.Services
 {
-    public class InvoiceEmailService : IInvoiceEmailService
+    public class EmailService : IEmailService
     {
         private readonly string _senderEmail;
         private readonly string _senderName;
 
-        public InvoiceEmailService(string senderEmail, string senderName)
+        public EmailService(string senderEmail, string senderName)
         {
             _senderEmail = senderEmail;
             _senderName = senderName;
         }
 
-        public async System.Threading.Tasks.Task prepareEmailMessage(string userName, string email, List<double> pricePerDay, List<int> roomNumber,List<string> hotelName, List<int> NumberOfDays)
+        public async System.Threading.Tasks.Task PrepareResetPasswordCodeEmail(string userName, string email, string code)
+        {
+            int count = 0;
+
+            StringBuilder message = new StringBuilder();
+
+            string format = "{0,-20} {1,-12} {2,-15} {3,-10}";
+
+
+            string subject = "Reset Password Code.";
+            message.AppendLine("<html><body>");
+            message.AppendLine($"<h2 style=\"color:blue;\">Your code is: {code}</h2>");
+            message.AppendLine("<p>Thanks for choosing us.</p>");
+            message.AppendLine("</body></html>");
+
+            string totalMsg = message.ToString();
+
+            await SendEmail(email, userName, subject, totalMsg);
+            
+            
+        }
+
+        public async System.Threading.Tasks.Task prepareInvoiceEmailMessage(string userName, string email, List<double> pricePerDay, List<int> roomNumber, List<string> hotelName, List<int> NumberOfDays)
         {
 
             int count = 0;
@@ -50,21 +70,21 @@ namespace TABP.Infrastructure.Services
                 message.AppendLine($"<td>{pricePerDay[count]}</td>");
                 message.AppendLine("</tr>");
                 count++;
-                
+
             }
 
             message.AppendLine("</table>");
-            totalPrice = pricePerDay.Sum(); 
+            totalPrice = pricePerDay.Sum();
             message.AppendLine($"<p>Total price = {totalPrice}</p>");
             message.AppendLine("<p>Thanks for choosing us.</p>");
             message.AppendLine("</body></html>");
 
             string totalMsg = message.ToString();
 
-            await SendInvoiceEmail(email, userName, subject, totalMsg);
+            await SendEmail(email, userName, subject, totalMsg);
         }
 
-        public async System.Threading.Tasks.Task SendInvoiceEmail(string recieverEmail, string recieverName, string subject, string message)
+        public async System.Threading.Tasks.Task SendEmail(string recieverEmail, string recieverName, string subject, string message)
         {
             var apiInstance = new TransactionalEmailsApi();
             SendSmtpEmailSender sender = new SendSmtpEmailSender(_senderName, _senderEmail);

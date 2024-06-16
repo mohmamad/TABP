@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using TABP.API.CQRS.Handlers;
 using TABP.Application.CQRS.Queries.UserQueries;
 using TABP.Domain.Entities;
@@ -27,6 +28,11 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.UserQueryHandlers
                 request.PageSize,
                 request.Page
                 );
+            if (user.IsNullOrEmpty())
+            {
+                return Result<IEnumerable<User>>.Failure("User Not Found.");
+            }
+
 
             return Result<IEnumerable<User>>.Success(user);
 

@@ -14,5 +14,6 @@ namespace TABP.Domain.Entities
         public List<Booking> bookings { get; set; }
         public List<Review> Reviews { get; set; }
         public List<CartItem> CartItems { get; set; }
+        public List<ResetPasswordCode> ResetPasswordCodes { get; set; }
     }
 }

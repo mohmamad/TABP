@@ -20,5 +20,6 @@ namespace TABP.Infrastructure.Repositories
             );
         public Task DeleteUser(Guid UserId);
         public Task<User> GetUserByIdAsync(Guid userId);
+        public Task<bool> SaveChangesAsync();
     }
 }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using TABP.API.DTOs.HotelDtos;
 using TABP.API.DTOs.UserDtos;
 using TABP.API.Models;
 using TABP.Application.CQRS.Commands.UserCommands;
@@ -116,6 +118,73 @@ namespace TABP.API.Controllers
                 return Unauthorized();
             }
 
+        }
+
+        [HttpPost("ForgetPasswordDto")]
+        public async Task<ActionResult> GenerateForgetPasswordCode(ForgetPasswordDto forgetPasswordDto)
+        {
+
+            var result = await _mediator.Send(new GenerateForgetPasswordCodeCommand { Email = forgetPasswordDto.Email });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("checkCode/{code}")]
+        public async Task<ActionResult<string>> CheckIfCodeCorrect(string code)
+        {
+            var result = await _mediator.Send(new CheckCodeCommand { Code = code });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+
+            return BadRequest(result.ErrorMessage);
+        }
+
+
+        [HttpPatch("{userId}")]
+        public async Task<ActionResult> ResetPassword(Guid userId, JsonPatchDocument<UpdateUserDto> userJsonPatch)
+        {
+            var result = await _mediator.Send(new GetUsersQuery
+            {
+                UserId = userId,
+                FirstName = null,
+                LastName = null,
+                Email = null,
+                BirthDate = null,
+                UserLevel = null,
+                Page = 1,
+                PageSize = 1
+            });
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+            var user = result.Data;
+            var userDtoForUpdate = _mapper.Map<UpdateUserDto>(user);
+            userJsonPatch.ApplyTo(userDtoForUpdate, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!TryValidateModel(userDtoForUpdate))
+            {
+                return BadRequest(ModelState);
+            }
+
+            _mapper.Map(userDtoForUpdate, user);
+            await _mediator.Send(new SaveChangesCommand());
+            
+            return NoContent();
         }
 
     }
