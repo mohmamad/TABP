@@ -85,7 +85,7 @@ namespace TABP.Infrastructure.Repositories
             }
             if (startDate != null && endDate != null)
             {
-                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => r.Bookings.Any(b => !(b.StartDate >= startDate && b.StartDate <= endDate || b.EndDate >= startDate && b.EndDate <= endDate))));
+                hotelQuery = hotelQuery.Where(h => h.Rooms.Any(r => !r.Bookings.Any(b => (b.StartDate >= startDate && b.StartDate <= endDate || b.EndDate >= startDate && b.EndDate <= endDate))));
             }
             if (city != null)
             {
@@ -99,7 +99,8 @@ namespace TABP.Infrastructure.Repositories
             {
                 hotelQuery = hotelQuery.Where(h => h.Rooms.Count() >= numberOfRooms);
             }
-            return await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var hotel = await hotelQuery.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return hotel;
         }
 
         public async Task<Hotel> GetHotelById(Guid hotelId)
