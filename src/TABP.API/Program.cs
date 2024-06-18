@@ -16,6 +16,15 @@ using TABP.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("http://localhost:8081")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 builder.Services.AddDbContext<TABPDbContext>(options =>
 {
     string connectionString = builder.Configuration["ConnectionStrings:SqlServerConnectionString"];
@@ -37,8 +46,6 @@ Log.Logger = new LoggerConfiguration()
 
 Configuration.Default.ApiKey.Add("api-key", builder.Configuration["BrevoApi:ApiKey"]);
 
-
-// Add services to the container.
 builder.Host.UseSerilog();
 builder.Services.AddControllers(options =>
 {
@@ -47,7 +54,6 @@ builder.Services.AddControllers(options =>
 .AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -67,22 +73,14 @@ builder.Services.AddScoped<IResestPasswordRepository, ResetPasswordRepository>()
 builder.Services.AddDbContext<TABPDbContext>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
-
 var senderEmail = builder.Configuration.GetSection("BrevoApi")["SenderEmail"];
 var senderName = builder.Configuration.GetSection("BrevoApi")["SenderName"];
-
 builder.Services.AddSingleton<IEmailService>(new EmailService(senderEmail, senderName));
 
-
-
-
 var basePath = builder.Configuration.GetSection("ImageStorage")["BasePath"];
-
 builder.Services.AddSingleton<IImageStorageService>(new ImageStorageService(basePath));
 
-
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Authentication:Key"]);
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -98,21 +96,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseAuthentication();
-
 app.UseHttpsRedirection();
 
+app.UseCors("AllowSpecificOrigin"); // Use the configured CORS policy
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
