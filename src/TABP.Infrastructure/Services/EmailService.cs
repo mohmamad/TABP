@@ -96,16 +96,10 @@ namespace TABP.Infrastructure.Services
             string HtmlContent = null;
             string TextContent = message;
 
-            try
-            {
+            
                 var sendSmtpEmail = new SendSmtpEmail(sender, To, null, null, HtmlContent, TextContent, subject);
                 CreateSmtpEmail result = apiInstance.SendTransacEmail(sendSmtpEmail);
-                Console.WriteLine(result.ToJson());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            
         }
 
     }

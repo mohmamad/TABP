@@ -153,7 +153,12 @@ namespace TABP.API.Controllers
         [HttpPatch("{userId}")]
         public async Task<ActionResult> ResetPassword(Guid userId, JsonPatchDocument<UpdateUserDto> userJsonPatch)
         {
-            var result = await _mediator.Send(new GetUsersQuery
+            var code = User.Claims.FirstOrDefault(r => r.Type.EndsWith("code"))?.Value;
+            if (code == null)
+            {
+                return Unauthorized();
+            }
+                var result = await _mediator.Send(new GetUsersQuery
             {
                 UserId = userId,
                 FirstName = null,
@@ -169,7 +174,7 @@ namespace TABP.API.Controllers
             {
                 return NotFound(result.ErrorMessage);
             }
-            var user = result.Data;
+            var user = result.Data.ToList()[0];
             var userDtoForUpdate = _mapper.Map<UpdateUserDto>(user);
             userJsonPatch.ApplyTo(userDtoForUpdate, ModelState);
             if (!ModelState.IsValid)

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.FeaturedDealsDtos;
 using TABP.API.DTOs.HotelDtos;
-using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.HotelCommands;
 using TABP.Application.CQRS.Commands.LocationCommands;
 using TABP.Application.CQRS.Queries.HotelQueries;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
@@ -30,8 +31,13 @@ namespace TABP.Infrastructure.Repositories
 
         public async Task<bool> IsCodeValid(string code)
         {
-            ResetPasswordCode rcode = _dbContext.ResetPasswordCodes.Where(r => r.Code == code).ToList()[0];
-            if(rcode.CreatedDate <= DateTime.Now.AddMinutes(5))
+            var rcodes = _dbContext.ResetPasswordCodes.Where(r => r.Code == code);
+            if(rcodes.IsNullOrEmpty())
+            {
+                return false;
+            }
+            ResetPasswordCode rcode = rcodes.ToList()[0];
+            if (rcode.CreatedDate <= DateTime.Now.AddMinutes(5))
             {
                 return true;
             }

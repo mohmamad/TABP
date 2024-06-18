@@ -49,6 +49,10 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.UserHandlers
 
             if (IsAdded)
             {
+                try
+                {
+
+                }catch(Exception e) { return Result<string>.Failure("Email Not Sent." + e.Message); }    
                 await _emailService.PrepareResetPasswordCodeEmail(user.Data.Where(u => u.Email == request.Email).ToList()[0].FirstName, request.Email, code);
                 return Result<string>.Success("Code Generated successfully!");
             }

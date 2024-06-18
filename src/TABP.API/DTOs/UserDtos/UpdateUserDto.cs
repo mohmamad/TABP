@@ -7,7 +7,7 @@ namespace TABP.API.DTOs.UserDtos
         [Required]
         public string FirstName { get; set; }
         [Required]
-        public string LastBame { get; set; }
+        public string LastName { get; set; }
         [Required]
         public string Password { get; set; }
     }
