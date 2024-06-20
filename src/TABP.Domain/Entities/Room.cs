@@ -14,5 +14,6 @@
         public RoomType RoomType { get; set; }
         public List<FeaturedDeal> FeaturedDeals { get; set; }
         public List<CartItem> CartItems { get; set; }   
+        public List<RoomImage> Images { get; set; }
     }
 }

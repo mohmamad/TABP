@@ -27,5 +27,7 @@ namespace TABP.Domain.Interfaces
         public Task<Room> GetRoomByIdAsync(Guid roomId);
         public Task<bool> SaveChangesAsync();
         public Task<IEnumerable<Room>> GetRoomsWithFeaturedDealsByHotelIdAsync(Guid hotelId);
+        public Task<List<RoomImage>> AddRoomImageAsync(Guid roomId, List<string> imageBath);
+        public Task<List<RoomImage>> GetRoomImagesAsync(Guid roomId);
     }
 }

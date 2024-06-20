@@ -24,6 +24,7 @@ namespace TABP.Infrastructure
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
         public DbSet<ResetPasswordCode> ResetPasswordCodes { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

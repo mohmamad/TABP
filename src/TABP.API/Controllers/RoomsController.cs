@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.RoomDtos;
+using TABP.Application.CQRS.Commands.LocationCommands;
 using TABP.Application.CQRS.Commands.RoomCommands;
 using TABP.Application.CQRS.Queries.FeaturedDeals;
 using TABP.Application.CQRS.Queries.RoomQueries;
@@ -71,7 +72,7 @@ namespace TABP.API.Controllers
                 [FromQuery] int page = 1
             )
         {
-            
+
             var result = await _mediator.Send(new GetRoomsQuery
             {
                 RoomId = roomId,
@@ -121,7 +122,7 @@ namespace TABP.API.Controllers
             {
                 return BadRequest(result.ErrorMessage);
             }
-            
+
 
         }
 
@@ -192,6 +193,86 @@ namespace TABP.API.Controllers
                 return BadRequest(result.ErrorMessage);
             }
 
+        }
+
+
+        [HttpPost("{roomId}/roomImage")]
+        public async Task<ActionResult<RoomImageDto>> AddRotelImage([FromForm] AddRoomImagesDto imageFiles, Guid roomId)
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+
+            if (userLevel == "2")
+            {
+                List<string> baths = new List<string>();
+                foreach (var roomImage in imageFiles.RoomImages)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(roomImage.FileName);
+
+                    var fileBath = await _mediator.Send(new SaveImageCommand
+                    {
+                        CityImage = roomImage,
+                        FileName = fileName,
+                    });
+                    baths.Add(fileBath.Data);
+
+                }
+
+                var result = await _mediator.Send(new AddRoomImageCommand
+                {
+                    RoomId = roomId,
+                    RoomImageBaths = baths
+                });
+
+                string baseUrl = Request.Scheme + "://" + Request.Host + Request.Path;
+
+                var roomImagesDto = _mapper.Map<List<RoomImageDto>>(result.Data);
+
+                var HeaderInfo = new
+                {
+                    count = roomImagesDto.Count()
+                };
+
+                var responseObj = new
+                {
+                    Header = HeaderInfo,
+                    RoomImages = roomImagesDto
+                };
+
+                return Ok(responseObj);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+
+        [HttpGet("{roomId}/roomImage")]
+        public async Task<ActionResult<RoomImageDto>> GetRoomImages(Guid roomId)
+        {
+            var result = await _mediator.Send(new GetRoomImagesQuery { RoomId = roomId });
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            string baseUrl = Request.Scheme + "://" + Request.Host + Request.Path;
+
+            var roomImagesDto = _mapper.Map<List<RoomImageDto>>(result.Data);
+
+            var HeaderInfo = new
+            {
+                count = roomImagesDto.Count()
+            };
+
+            var responseObj = new
+            {
+                Header = HeaderInfo,
+                RoomImages = roomImagesDto
+            };
+
+            return Ok(responseObj);
         }
 
     }
