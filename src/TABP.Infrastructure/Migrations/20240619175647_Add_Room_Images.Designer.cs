@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TABP.Infrastructure;
 
@@ -11,9 +12,11 @@ using TABP.Infrastructure;
 namespace TABP.Infrastructure.Migrations
 {
     [DbContext(typeof(TABPDbContext))]
-    partial class TABPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240619175647_Add_Room_Images")]
+    partial class Add_Room_Images
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,12 +239,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            HotelTypeId = new Guid("bad40df6-79e5-4ab4-87cd-5957b2a4267b"),
+                            HotelTypeId = new Guid("fad83135-c50c-4492-a121-9700e55395f6"),
                             Type = "perfect"
                         },
                         new
                         {
-                            HotelTypeId = new Guid("c99cee82-254a-4690-8f7a-6cc4e14c9b1b"),
+                            HotelTypeId = new Guid("8da47d1e-a6ad-4b93-9090-9e7f8239e1c6"),
                             Type = "nice"
                         });
                 });
@@ -369,7 +372,7 @@ namespace TABP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ImageBath")
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -400,12 +403,12 @@ namespace TABP.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoomTypeId = new Guid("2609ee5f-14c3-40be-babb-863277aadec9"),
+                            RoomTypeId = new Guid("61d537be-b232-4e48-a117-b8362e5c1be9"),
                             Type = "perfect"
                         },
                         new
                         {
-                            RoomTypeId = new Guid("07d53cee-74ef-4f1c-a106-542d1d784e7e"),
+                            RoomTypeId = new Guid("63c826f3-35de-4c64-96a3-dfa50f38e896"),
                             Type = "nice"
                         });
                 });

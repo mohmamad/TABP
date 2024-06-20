@@ -120,7 +120,7 @@ namespace TABP.API.Controllers
 
         }
 
-        [HttpPost("ForgetPasswordDto")]
+        [HttpPost("ForgetPasswordCode")]
         public async Task<ActionResult> GenerateForgetPasswordCode(ForgetPasswordDto forgetPasswordDto)
         {
 

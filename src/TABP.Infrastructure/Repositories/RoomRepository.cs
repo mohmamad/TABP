@@ -106,5 +106,32 @@ namespace TABP.Infrastructure.Repositories
             var rooms = _dbContext.Rooms.Where(r => r.FeaturedDeals.Any(f => f.EndDate > DateTime.UtcNow));
             return rooms;
         }
+
+        public async Task<List<RoomImage>> AddRoomImageAsync(Guid roomId, List<string> imageBaths)
+        {
+            var doesRoomExist = await _dbContext.Rooms.AnyAsync(r => r.RoomId == roomId);
+            if (!doesRoomExist)
+            {
+                return null;
+            }
+
+            List<RoomImage> roomImages = new List<RoomImage>();
+
+            foreach (var imageBath in imageBaths)
+            {
+                var roomImage = new RoomImage { ImageBath = imageBath, RoomId = roomId };
+                await _dbContext.RoomImages.AddAsync(roomImage);
+                await _dbContext.SaveChangesAsync();
+                roomImages.Add(roomImage);
+            }
+            
+            return roomImages;
+        }
+
+        public async Task<List<RoomImage>> GetRoomImagesAsync(Guid roomId)
+        {
+            return _dbContext.RoomImages.Where(r => r.RoomId == roomId).ToList();
+        }
+
     }
 }
