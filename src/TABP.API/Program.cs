@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using sib_api_v3_sdk.Client;
+using Square.Apis;
+using Square;
 using System.Reflection;
 using System.Text;
 using TABP.API.Logging;
@@ -20,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:8081")
+        builder => builder.WithOrigins("http://localhost:5173", "http://localhost:8081")
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
@@ -70,6 +72,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IResestPasswordRepository, ResetPasswordRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddDbContext<TABPDbContext>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
@@ -95,6 +98,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true
         };
     });
+
+builder.Services.AddSingleton<IPaymentsApi>(sp =>
+{
+    var accessToken = builder.Configuration["Square:AccessToken"];
+    var squareClient = new SquareClient.Builder()
+    .BearerAuthCredentials(
+        new Square.Authentication.BearerAuthModel.Builder(accessToken)
+        .Build()
+    )
+    .Environment(builder.Environment.IsProduction() ? Square.Environment.Production : Square.Environment.Sandbox)
+    .Build();
+
+    return squareClient.PaymentsApi;
+});
 
 var app = builder.Build();
 

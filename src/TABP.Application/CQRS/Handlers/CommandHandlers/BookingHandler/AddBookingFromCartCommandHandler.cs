@@ -20,6 +20,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
         private readonly IUserRepository _userRepository;
         private readonly IHotelRepository _hotelRepository;
         private readonly ITransactionService _transactionService;
+        private readonly IPaymentService _paymentService;
 
         public AddBookingFromCartCommandHandler(
             IBookingRepository bookingRepository, 
@@ -29,7 +30,8 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             IEmailService invoiceEmailService,
             IUserRepository userRepository,
             IHotelRepository hotelRepository,
-            ITransactionService transactionService)
+            ITransactionService transactionService,
+            IPaymentService paymentService)
         {
             _roomRepository = roomRepository;
             _bookingRepository = bookingRepository;
@@ -39,6 +41,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
             _userRepository = userRepository;  
             _hotelRepository = hotelRepository;
             _transactionService = transactionService;
+            _paymentService = paymentService;
         }
         public async Task<Result<IEnumerable<Booking>>> Handle(AddBookingFromCartCommand request, CancellationToken cancellationToken)
         {
@@ -107,6 +110,11 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.BookingHandler
 
                 string userName = user.FirstName + " " + user.LastName;
                 string userEmail = user.Email;
+
+                var result = await _paymentService.PayAsync(request.CardDetailsToken,
+                request.IdempotencyKey,
+                100,
+                "USD");
 
                 await _invoiceEmailService.prepareInvoiceEmailMessage(userName, userEmail,pricePerDay, rooms, hotelName, numberOfDays);
                 await _transactionService.CommitTransaction();
