@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Square.Models;
 using TABP.API.DTOs.BookingDtos;
 using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.BookingCommands;
@@ -21,7 +22,10 @@ namespace TABP.API.Controllers
         }
 
         [HttpPost("user/{userId}/cart")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> bookFromCart(Guid userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> bookFromCart
+            (
+            Guid userId,
+            [FromBody] CreateBookingRequestDto createBookingRequest)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type.EndsWith("nameidentifier"));
             var userIdFromToken = new Guid();
@@ -37,6 +41,8 @@ namespace TABP.API.Controllers
             {
                 var result = await _mediator.Send(new AddBookingFromCartCommand
                 {
+                    CardDetailsToken = createBookingRequest.CardDetailsToken,
+                    IdempotencyKey = createBookingRequest.IdempotencyKey,
                     UserId = userId,
                 });
 
