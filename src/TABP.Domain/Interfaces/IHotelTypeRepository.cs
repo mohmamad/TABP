@@ -6,5 +6,6 @@ namespace TABP.Domain.Interfaces
     {
         public Task<HotelType> AddHotelTypeAsync(HotelType hotelType);
         public Task<HotelType> GetHotelTypeById(Guid hotelTypeId);
+        public Task<HotelType> GetHotelTypeByHotelId(Guid hotelId);
     }
 }

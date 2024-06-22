@@ -6,16 +6,16 @@ using TABP.Domain.Interfaces;
 
 namespace TABP.Application.CQRS.Handlers.QueryHandlers.HotelHandlers
 {
-    public class GetHotelTypeByIdQueryHandler : IRequestHandler<GetHotelTypeByIdQuery, Result<HotelType>>
+    public class GetHotelTypeByHotelIdQueryHandler : IRequestHandler<GetHotelTypeByHotelIdQuery, Result<HotelType>>
     {
         private readonly IHotelTypeRepository _hotelTypeRepository;
-        public GetHotelTypeByIdQueryHandler(IHotelTypeRepository hotelTypeRepository)
+        public GetHotelTypeByHotelIdQueryHandler(IHotelTypeRepository hotelTypeRepository)
         {
             _hotelTypeRepository = hotelTypeRepository;
         }
-        public async Task<Result<HotelType>> Handle(GetHotelTypeByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<HotelType>> Handle(GetHotelTypeByHotelIdQuery request, CancellationToken cancellationToken)
         {
-            var hotelType = await _hotelTypeRepository.GetHotelTypeById(request.hotelTypeId);
+            var hotelType = await _hotelTypeRepository.GetHotelTypeByHotelId(request.hotelId);
             if (hotelType != null)
             {
                 return Result<HotelType>.Success(hotelType);

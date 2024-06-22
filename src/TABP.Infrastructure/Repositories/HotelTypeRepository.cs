@@ -23,5 +23,10 @@ namespace TABP.Infrastructure.Repositories
         {
             return await _dbContext.HotelTypes.FirstOrDefaultAsync(h => h.HotelTypeId == hotelTypeId);
         }
+
+        public async Task<HotelType> GetHotelTypeByHotelId(Guid hotelId)
+        {
+            return await _dbContext.HotelTypes.FirstOrDefaultAsync(ht => ht.Hotels.Any(h => h.HotelId == hotelId));
+        }
     }
 }

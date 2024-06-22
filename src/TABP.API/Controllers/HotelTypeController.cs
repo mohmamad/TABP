@@ -41,12 +41,12 @@ namespace TABP.API.Controllers
 
         }
 
-        [HttpGet("{hotelTypeId}")]
-        public async Task<ActionResult<HotelTypeDto>> GetHotelTypeById(Guid hotelTypeId)
+        [HttpGet("{hotelId}")]
+        public async Task<ActionResult<HotelTypeDto>> GetHotelTypeByHotelId(Guid hotelId)
         {
-            var result = await _mediator.Send(new GetHotelTypeByIdQuery
+            var result = await _mediator.Send(new GetHotelTypeByHotelIdQuery
             {
-                hotelTypeId = hotelTypeId
+                hotelId = hotelId
             });
             if (result.IsSuccess)
             {

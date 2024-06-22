@@ -12,7 +12,7 @@ namespace TABP.API.Profiles
         {
             var links = new List<Link>
             {
-            new Link { Rel = "hotel type", Href = $"/api/hotel/hotelType/{source.HotelTypeId}", Method = "GET" },
+            new Link { Rel = "hotel type", Href = $"/api/hotelType/{source.HotelId}", Method = "GET" },
             new Link { Rel = "location", Href = $"/api/hotel/{source.HotelId}/location", Method = "GET" },
             new Link { Rel = "hotel images", Href = $"/api/hotel/hotelImage/{source.HotelId}", Method = "GET" },
             new Link { Rel = "booking", Href = $"/api/hotel/{source.HotelId}/location", Method = "GET" },
