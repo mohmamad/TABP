@@ -2,8 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TABP.API.DTOs.HotelDtos;
+using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.HotelCommands;
 using TABP.Application.CQRS.Queries.HotelQueries;
+using TABP.Application.CQRS.Queries.RoomQueries;
 
 namespace TABP.API.Controllers
 {
@@ -58,6 +60,25 @@ namespace TABP.API.Controllers
                 return BadRequest(result.ErrorMessage);
             }
 
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<RoomTypeDto>> GetHotelType()
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel != "2")
+            {
+                return Unauthorized();
+            }
+
+            var result = await _mediator.Send(new GetHotelTypeQuery());
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            var hotelTypeDto = _mapper.Map<List<HotelTypeDto>>(result.Data);
+            return Ok(hotelTypeDto);
         }
 
     }

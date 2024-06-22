@@ -39,14 +39,34 @@ namespace TABP.API.Controllers
             }
         }
 
-        [HttpGet("roomType/{roomtypeId}")]
-        public async Task<ActionResult<RoomTypeDto>> GetRoomTypeByRoomId(Guid roomTypeId)
+        [HttpGet("roomType/{roomId}")]
+        public async Task<ActionResult<RoomTypeDto>> GetRoomTypeByRoomId(Guid roomId)
         {
-            var result = await _mediator.Send(new GetRoomTypeByIdQuery
+            var result = await _mediator.Send(new GetRoomTypeByRoomIdQuery
             {
-                RoomTypeId = roomTypeId
+                RoomId = roomId
             });
+            if (!result.IsSuccess) return BadRequest(result.ErrorMessage);
+
             var roomTypeDto = _mapper.Map<RoomTypeDto>(result.Data);
+            return Ok(roomTypeDto);
+        }
+
+        [HttpGet("roomType")]
+        public async Task<ActionResult<RoomTypeDto>> GetRoomType()
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel != "2")
+            {
+                return Unauthorized();
+            }
+            var result = await _mediator.Send(new GetRoomTypesQuery());
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            var roomTypeDto = _mapper.Map<List<RoomTypeDto>>(result.Data);
             return Ok(roomTypeDto);
         }
     }

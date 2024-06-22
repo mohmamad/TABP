@@ -91,9 +91,9 @@ namespace TABP.Infrastructure.Repositories
             return room;
         }
 
-        public async Task<RoomType> GetRoomTypeByRoomIdAsync(Guid roomTypeId)
+        public async Task<RoomType> GetRoomTypeByRoomIdAsync(Guid roomId)
         {
-            return await _dbContext.RoomTypes.FirstOrDefaultAsync(r => r.RoomTypeId == roomTypeId);
+            return await _dbContext.RoomTypes.FirstOrDefaultAsync(rt => rt.rooms.Any(r => r.RoomId == roomId));
         }
 
         public async Task<bool> SaveChangesAsync()
@@ -131,6 +131,11 @@ namespace TABP.Infrastructure.Repositories
         public async Task<List<RoomImage>> GetRoomImagesAsync(Guid roomId)
         {
             return _dbContext.RoomImages.Where(r => r.RoomId == roomId).ToList();
+        }
+
+        public async Task<List<RoomType>> GetRoomTypes()
+        {
+            return await _dbContext.RoomTypes.ToListAsync();
         }
 
     }

@@ -4,8 +4,8 @@ using TABP.Domain.Entities;
 
 namespace TABP.Application.CQRS.Queries.RoomQueries
 {
-    public class GetRoomTypeByIdQuery : IRequest<Result<RoomType>>
+    public class GetRoomTypeByRoomIdQuery : IRequest<Result<RoomType>>
     {
-        public Guid RoomTypeId { get; set; }
+        public Guid RoomId { get; set; }
     }
 }
