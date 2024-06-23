@@ -11,7 +11,7 @@ namespace TABP.API.Profiles.RoomProfile
         {
             var links = new List<Link>
             {
-            new Link { Rel = "room type", Href = $"/api/room/roomType/{source.RoomTypeId}", Method = "GET" },
+            new Link { Rel = "room type", Href = $"/api/room/roomType/{source.RoomId}", Method = "GET" },
             new Link { Rel = "hotel", Href = $"/api/hotel?hotelId={source.HotelId}", Method = "GET" },
             new Link { Rel = "booking", Href = $"/api/booking?roomId={source.RoomId}", Method = "GET" }
             };

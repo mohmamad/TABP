@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Square.Models;
 using TABP.API.DTOs.BookingDtos;
-using TABP.API.DTOs.RoomDtos;
 using TABP.Application.CQRS.Commands.BookingCommands;
 using TABP.Application.CQRS.Queries.BookingQueries;
 
