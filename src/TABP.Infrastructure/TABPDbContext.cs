@@ -45,11 +45,18 @@ namespace TABP.Infrastructure
         .HasForeignKey(c => c.RoomId)
         .IsRequired(false);
 
-            
+            modelBuilder.Entity<Hotel>()
+    .HasMany(h => h.Rooms)
+    .WithOne(r => r.Hotel)
+    .HasForeignKey(r => r.HotelId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
 
             SeedingHotelType(modelBuilder);
             SeedingRoomType(modelBuilder);
         }
+
 
 
 

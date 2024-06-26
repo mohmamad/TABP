@@ -123,5 +123,24 @@ namespace TABP.API.Controllers
             }
             
         }
+
+        [HttpGet("location/city")]
+        public async Task<ActionResult<IEnumerable<CityDto>>> GetCities()
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel != "2")
+            {
+                return Unauthorized();
+            }
+            var result = await _mediator.Send(new GetCitiesQuery());
+
+            if (!result.IsSuccess) return BadRequest(result.ErrorMessage);
+
+            var dtoToReturn = _mapper.Map<IEnumerable<CityDto>>(result.Data);
+            return Ok(dtoToReturn);
+        }
+
+
+
     }
 }

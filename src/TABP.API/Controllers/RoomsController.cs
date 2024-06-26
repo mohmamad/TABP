@@ -275,5 +275,18 @@ namespace TABP.API.Controllers
             return Ok(responseObj);
         }
 
+        [HttpDelete("{roomId}")]
+        public async Task<ActionResult> DeleteRoom(Guid roomId)
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel != "2")
+            {
+                return Unauthorized();
+            }
+            var result = await _mediator.Send(new DeleteRoomCommand { RoomId = roomId });
+
+            return Ok(result.Data);
+        }
+
     }
 }

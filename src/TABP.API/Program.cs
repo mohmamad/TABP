@@ -21,10 +21,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:5173", "http://localhost:8081")
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.WithOrigins("*")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
 });
 
 builder.Services.AddDbContext<TABPDbContext>(options =>
@@ -115,15 +118,17 @@ builder.Services.AddSingleton<IPaymentsApi>(sp =>
 
 var app = builder.Build();
 
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
-app.UseCors("AllowSpecificOrigin"); // Use the configured CORS policy
+app.UseCors("AllowAll"); // Use the configured CORS policy
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

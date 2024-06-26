@@ -138,5 +138,11 @@ namespace TABP.Infrastructure.Repositories
             return await _dbContext.RoomTypes.ToListAsync();
         }
 
+        public async Task DeleteRoom(Guid roomId)
+        {
+            _dbContext.Rooms.Remove(new Room { RoomId = roomId});
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }

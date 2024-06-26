@@ -30,5 +30,6 @@ namespace TABP.Domain.Interfaces
         public Task<List<RoomImage>> AddRoomImageAsync(Guid roomId, List<string> imageBath);
         public Task<List<RoomImage>> GetRoomImagesAsync(Guid roomId);
         public Task<List<RoomType>> GetRoomTypes();
+        public Task DeleteRoom(Guid roomId);
     }
 }

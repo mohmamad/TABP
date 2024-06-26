@@ -34,5 +34,10 @@ namespace TABP.Infrastructure.Repositories
                                         .ToList();
             return mostVisitedCities;
         }
+
+        public async Task<IEnumerable<City>> GetAllCitiesAsync()
+        {
+            return await _dbContext.Cities.ToListAsync();
+        }
     }
 }

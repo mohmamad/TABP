@@ -152,5 +152,15 @@ namespace TABP.Infrastructure.Repositories
 
             return latestHotels;
         }
+
+        public async Task DeleteHotel(Guid hotelId)
+        {
+            //_dbContext.Rooms.RemoveRange(new Room { HotelId = hotelId});
+            //await _dbContext.SaveChangesAsync();
+            _dbContext.Hotels.Remove(new Hotel { HotelId = hotelId});
+            await _dbContext.SaveChangesAsync();    
+        }
+
+
     }
 }

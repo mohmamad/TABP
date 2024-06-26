@@ -6,6 +6,7 @@ using TABP.API.DTOs.FeaturedDealsDtos;
 using TABP.API.DTOs.HotelDtos;
 using TABP.Application.CQRS.Commands.HotelCommands;
 using TABP.Application.CQRS.Commands.LocationCommands;
+using TABP.Application.CQRS.Commands.RoomCommands;
 using TABP.Application.CQRS.Queries.HotelQueries;
 
 namespace TABP.API.Controllers
@@ -269,6 +270,19 @@ namespace TABP.API.Controllers
                 return BadRequest(result.ErrorMessage);
             }
 
+        }
+
+        [HttpDelete("{hotelId}")]
+        public async Task<ActionResult> DeleteRoom(Guid hotelId)
+        {
+            var userLevel = User.Claims.FirstOrDefault(r => r.Type.EndsWith("role"))?.Value;
+            if (userLevel != "2")
+            {
+                return Unauthorized();
+            }
+            var result = await _mediator.Send(new DeleteHotelCommand { HotelId = hotelId });
+
+            return Ok(result.Data);
         }
 
     }
