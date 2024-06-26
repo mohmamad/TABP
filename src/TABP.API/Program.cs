@@ -128,7 +128,6 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseCors("AllowAll"); // Use the configured CORS policy
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

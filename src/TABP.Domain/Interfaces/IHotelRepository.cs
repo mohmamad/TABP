@@ -31,5 +31,6 @@ namespace TABP.Domain.Interfaces
         public Task<IEnumerable<Hotel>> GetHotelWithFeaturedDeals();
         public Task<IEnumerable<Hotel>> GetLatestVisitedHotelForUser(Guid userId);
         public Task DeleteHotel(Guid hotelId);
+        public Task<List<Hotel>> GetAllHotelsAsync(string? name);
     }
 }

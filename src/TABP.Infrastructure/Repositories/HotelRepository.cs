@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 using TABP.Domain.Entities;
 using TABP.Domain.Interfaces;
 
@@ -159,6 +160,12 @@ namespace TABP.Infrastructure.Repositories
             //await _dbContext.SaveChangesAsync();
             _dbContext.Hotels.Remove(new Hotel { HotelId = hotelId});
             await _dbContext.SaveChangesAsync();    
+        }
+        public async Task<List<Hotel>> GetAllHotelsAsync(string? name)
+        {
+            if (name == null) return await _dbContext.Hotels.Where(h => h.HotelName == name).ToListAsync();
+            return await _dbContext.Hotels.ToListAsync();
+           
         }
 
 

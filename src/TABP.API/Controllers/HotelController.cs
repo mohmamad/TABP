@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using iTextSharp.text;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -283,6 +284,29 @@ namespace TABP.API.Controllers
             var result = await _mediator.Send(new DeleteHotelCommand { HotelId = hotelId });
 
             return Ok(result.Data);
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<HotelDto>>> GetAllHotels([FromQuery] string? hotelName)
+        {
+            var result = await _mediator.Send(new GetAllHotelsQuery());
+            if (!result.IsSuccess) return BadRequest(result.ErrorMessage);
+
+            var hotelDto = _mapper.Map<IEnumerable<HotelDto>>(result.Data);
+            string baseUrl = Request.Scheme + "://" + Request.Host + Request.Path;
+            
+            var paginationInfo = new
+            {
+                count = hotelDto.Count()
+            };
+
+            var responseObj = new
+            {
+                Pagination = paginationInfo,
+                Hotels = hotelDto
+            };
+
+            return Ok(responseObj);
         }
 
     }
