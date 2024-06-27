@@ -163,7 +163,7 @@ namespace TABP.Infrastructure.Repositories
         }
         public async Task<List<Hotel>> GetAllHotelsAsync(string? name)
         {
-            if (name == null) return await _dbContext.Hotels.Where(h => h.HotelName == name).ToListAsync();
+            if (name != null) return await _dbContext.Hotels.Where(h => h.HotelName == name).ToListAsync();
             return await _dbContext.Hotels.ToListAsync();
            
         }
