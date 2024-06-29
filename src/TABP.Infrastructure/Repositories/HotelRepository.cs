@@ -134,6 +134,7 @@ namespace TABP.Infrastructure.Repositories
         public async Task<IEnumerable<Hotel>> GetLatestVisitedHotelForUser(Guid userId)
         {
             var latestBookings = _dbContext.Bookings
+            .Where(b => b.UserId == userId)
             .Include(b => b.Room)
             .Include(b => b.Room.Hotel)
             .OrderByDescending(b => b.EndDate)
