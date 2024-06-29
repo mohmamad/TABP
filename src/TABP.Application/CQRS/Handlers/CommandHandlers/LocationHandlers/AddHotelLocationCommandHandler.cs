@@ -9,8 +9,10 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.LocationHandlers
     public class AddHotelLocationCommandHandler : IRequestHandler<AddHotelLocationCommand, Result<Location>>
     {
         private readonly ILocationRepository _repository;
-        public AddHotelLocationCommandHandler(ILocationRepository repository)
+        private readonly ICityRepository _cityRepository;
+        public AddHotelLocationCommandHandler(ILocationRepository repository, ICityRepository cityRepository)
         {
+            _cityRepository = cityRepository;
             _repository = repository;
         }
         public async Task<Result<Location>> Handle(AddHotelLocationCommand request, CancellationToken cancellationToken)
@@ -21,6 +23,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.LocationHandlers
                 PostalCode = request.PostalCode,
                 HotelId = request.HotelId
             };
+            
             var city = new City
             {
                 CityName = request.CityName,
@@ -34,7 +37,7 @@ namespace TABP.Application.CQRS.Handlers.CommandHandlers.LocationHandlers
             }
             catch (Exception ex)
             {
-                return Result<Location>.Failure("the hotel you are trying to add the location for does not exist.");
+                return Result<Location>.Failure("the hotel you are trying to add the location for does not exist or already has a location.");
             }
 
 

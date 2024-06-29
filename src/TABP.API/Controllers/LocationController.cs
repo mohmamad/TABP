@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using sib_api_v3_sdk.Model;
 using TABP.API.DTOs.LocationDtos;
 using TABP.Application.CQRS.Commands.LocationCommands;
 using TABP.Application.CQRS.Queries.LocationQueries;
@@ -61,7 +62,32 @@ namespace TABP.API.Controllers
                         return BadRequest(result.ErrorMessage);
                     }
                 }
-                return BadRequest();
+                else
+                {
+                    var result = await _mediator.Send(new AddHotelLocationCommand
+                    {
+                        CountryName = imageFile.CountryName,
+                        StreetName = imageFile.StreetName,
+                        CityName = imageFile.CityName,
+                        CityDescription = imageFile.CityDescription,
+                        PostalCode = imageFile.PostalCode,
+                        ImagePath = null,
+                        HotelId = hotelId,
+                    });
+                    if (result.IsSuccess)
+                    {
+                        var location = _mapper.Map<LocationDto>(result.Data);
+
+                        return Ok(location);
+                    }
+                    else
+                    {
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+
+
+ 
             }
             else
             {
