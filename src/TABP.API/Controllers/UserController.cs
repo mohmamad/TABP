@@ -46,7 +46,7 @@ namespace TABP.API.Controllers
             else return BadRequest(result.ErrorMessage);
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> AuthenticateUser(UserCredentials userCredentials)
