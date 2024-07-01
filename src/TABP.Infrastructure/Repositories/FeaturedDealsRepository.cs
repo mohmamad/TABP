@@ -31,7 +31,8 @@ namespace TABP.Infrastructure.Repositories
                  int page
             )
         {
-            IQueryable<FeaturedDeal> featuredDealQuery = _dbContext.FeaturedDeals;
+            IQueryable<FeaturedDeal> featuredDealQuery = _dbContext.FeaturedDeals
+                .Where(fd => fd.StartDate.Date <= DateTime.Now.Date && fd.EndDate.Date >= DateTime.Now.Date);
 
             if (featuredDealId != null)
             {
