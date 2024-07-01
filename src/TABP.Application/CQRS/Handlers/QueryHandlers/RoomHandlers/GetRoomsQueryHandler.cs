@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using TABP.API.CQRS.Handlers;
 using TABP.Application.CQRS.Queries.RoomQueries;
 using TABP.Domain.Entities;
@@ -30,7 +31,7 @@ namespace TABP.Application.CQRS.Handlers.QueryHandlers.RoomQueryHandlers
                     request.PageSize,
                     request.Page
                 );
-            if(room != null)
+            if(!room.IsNullOrEmpty())
             {
                 return Result<IEnumerable<Room>>.Success(room);
             }
